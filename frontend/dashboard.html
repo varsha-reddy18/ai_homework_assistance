@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homework Helper</title>
+
+  <!-- GOOGLE FONT -->
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
+  <!-- CSS FILE -->
+  <link rel="stylesheet" href="css/dashboard.css">
+
+</head>
+
+<body>
+
+  <header class="topbar">
+
+  <!-- LEFT -->
+  <div class="nav-left">
+    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+
+    <div class="logo">
+      🎓 AI-Powered Homework Assistance System
+    </div>
+  </div>
+
+  <!-- CENTER -->
+  <!--<div class="nav-center">
+    AI Homework Assistance System
+  </div>!>
+
+  <!- RIGHT -->
+  <div class="nav-right">
+
+    <div>Hello Student!</div>
+
+    <div class="streak-box">
+  🔥 <span id="streakCount">0</span>
+</div>
+    <!-- PROFILE -->
+    <div class="profile-wrapper">
+      <div class="profile-circle" onclick="toggleProfileMenu()">👩‍🎓</div>
+
+      <div id="profileMenu" class="profile-menu">
+        <p onclick="editProfile()">✏ Edit Profile</p>
+        <p onclick="openSettings()">⚙ Settings</p>
+        <p onclick="logout()">🚪 Logout</p>
+      </div>
+    </div>
+
+  </div>
+
+</header>
+
+  <div class="layout">
+
+  <!-- SIDEBAR -->
+  <div class="sidebar" id="sidebar">
+    <button onclick="showSection('home')">🏠 Dashboard</button>
+    <button onclick="showSection('ask')">🤖 Ask AI</button>
+    <button onclick="showSection('planner')">📅 Planner</button>
+    <button onclick="showSection('quiz')">❓ Quiz</button>
+    <button onclick="showSection('grammar')">✏ Grammar</button>
+    <button onclick="showSection('puzzle')">🎮 Puzzle</button>
+    <button onclick="showSection('flashcards')">🧠 Flashcards</button>
+    <button onclick="showSection('pomodoro')">🍅 Pomodoro</button>
+    <button onclick="showSection('geo')">🌍 General Knowledge</button>
+    <button onclick="toggleDark()">🌙</button>
+  </div>
+
+
+  <div class="main">
+
+  <!-- DASHBOARD -->
+  <div id="home" class="section active">
+
+    <div class="hero">
+      <h2>✨ Learn Smarter with AI</h2>
+      <p>Boost your learning with personalized AI tools and interactive content.</p>
+    </div>
+
+    <div class="card">
+      <h3>📚 Subjects</h3>
+      <div class="subjects">
+        <div>Telugu</div>
+        <div>Hindi</div>
+        <div>English</div>
+        <div>Math</div>
+        <div>Physics</div>
+        <div>Chemistry</div>
+        <div>Biology</div>
+        <div>Social</div>
+        <div>Computer</div>
+
+      </div>
+    </div>
+
+    <h3>🎥 Learning Shorts</h3>
+
+    <div class="videos">
+      <div class="video-card" onclick="openVideo('q01E63DwN1c')">
+        <img src="https://img.youtube.com/vi/q01E63DwN1c/0.jpg">
+      </div>
+
+      <div class="video-card" onclick="openVideo('vacGRuHDtO0')">
+        <img src="https://img.youtube.com/vi/vacGRuHDtO0/0.jpg">
+      </div>
+
+      <div class="video-card" onclick="openVideo('OQXanWrIUF8')">
+        <img src="https://img.youtube.com/vi/OQXanWrIUF8/0.jpg">
+      </div>
+
+      <div class="video-card" onclick="openVideo('PGUdWfB8nLg')">
+        <img src="https://img.youtube.com/vi/PGUdWfB8nLg/0.jpg">
+      </div>
+    </div>
+
+  </div>
+
+<!-- ================= ASK AI ================= -->
+<div id="ask" class="section">
+
+  <div class="chatgpt-container">
+
+    <!-- LEFT SIDEBAR (CHAT LIST) -->
+    <div class="chat-sidebar">
+      <button onclick="createNewChat()">➕ New Chat</button>
+      <div id="chatList"></div>
+    </div>
+
+    <!-- RIGHT CHAT AREA -->
+    <div class="chat-main">
+
+      <!-- HEADER -->
+      <div class="chat-header">
+        🤖 Ask AI Assistant
+      </div>
+
+      <!-- CHAT AREA -->
+      <div id="chatArea" class="chat-area"></div>
+
+      <!-- INPUT AREA -->
+      <div class="chat-input-area">
+
+        <input type="text" id="question" placeholder="Ask anything..." />
+
+        <!-- VOICE -->
+        <button onclick="startVoice()">🎙️</button>
+        <button onclick="stopVoice()">⛔</button>
+
+        <!-- IMAGE -->
+        <input type="file" id="imageInput" hidden onchange="uploadImage()">
+        <button onclick="document.getElementById('imageInput').click()">📷</button>
+
+        <!-- SEND -->
+        <button onclick="askAI()">➤</button>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= PLANNER ================= -->
+<div id="planner" class="section">
+
+  <div class="planner-container">
+
+    <h1>📅 Daily Study Planner</h1>
+
+    <!-- TOP -->
+    <div class="planner-top">
+      <input id="studentName" placeholder="Enter Name">
+      <input type="date" id="date">
+    </div>
+
+    <!-- TIME + TASK GRID -->
+    <div class="planner-grid">
+
+      <!-- TIME -->
+      <div class="time-box">
+        <h3>⏰ Time</h3>
+        <input placeholder="8:00 - 9:00 AM">
+        <input placeholder="10:00 - 11:00 AM">
+        <input placeholder="1:00 - 2:00 PM">
+        <input placeholder="3:00 - 4:00 PM">
+      </div>
+
+      <!-- TASK -->
+      <div class="task-box">
+        <h3>📚 Subject / Task</h3>
+        <input placeholder="Math - Practice">
+        <input placeholder="Science - Notes">
+        <input placeholder="AI - Coding">
+        <input placeholder="English - Reading">
+      </div>
+
+    </div>
+
+    <!-- GOALS -->
+    <div class="goals-box">
+      <h3>🎯 Daily Goals</h3>
+      <textarea placeholder="Write your goals..."></textarea>
+    </div>
+
+    <!-- NOTES -->
+    <div class="notes-box">
+      <h3>📝 Notes</h3>
+      <textarea placeholder="Write notes here..."></textarea>
+    </div>
+
+    <!-- SAVE BUTTON -->
+    <button class="save-btn" onclick="savePlanner()">💾 Save Plan</button>
+
+    <!-- SAVED TASKS DISPLAY -->
+    <div class="task-display">
+      <h3>📌 Your Plan</h3>
+      <ul id="taskList"></ul>
+    </div>
+
+  </div>
+
+</div>
+  
+<!-- ================= QUIZ ================= -->
+<div id="quiz" class="section">
+
+  <!-- START SCREEN -->
+  <div class="quiz-start-screen">
+
+    <h1 class="quiz-title">
+      START<br>QUIZ
+    </h1>
+
+    <button class="start-btn" onclick="startQuiz()">
+      ▶ Start Quiz
+    </button>
+
+  </div>
+
+  <!-- QUIZ AREA -->
+  <div id="quizArea"></div>
+
+  <!-- RESULT -->
+  <div id="resultBox"></div>
+
+</div>
+
+
+
+<!-- ================= GRAMMAR ================= -->
+<div id="grammar" class="section">
+
+  <h2 class="section-title">✏️ Grammar Learning</h2>
+
+  <!-- CARDS -->
+  <div class="grammar-grid">
+
+    <div class="grammar-card">
+      <h3>📘 Tenses</h3>
+      <p>Understand Present, Past, and Future tenses to describe actions clearly.</p>
+    </div>
+
+    <div class="grammar-card">
+      <h3>🧩 Parts of Speech</h3>
+      <p>Noun, Verb, Adjective, Adverb, Pronoun, Preposition explained simply.</p>
+    </div>
+
+    <div class="grammar-card">
+      <h3>🔄 Active & Passive</h3>
+      <p>Learn how sentences change from active voice to passive voice.</p>
+    </div>
+
+    <div class="grammar-card">
+      <h3>📚 Vocabulary</h3>
+      <p>Improve synonyms, antonyms, and word meanings.</p>
+    </div>
+
+    <div class="grammar-card">
+      <h3>✍️ Punctuation</h3>
+      <p>Master commas, full stops, question marks, and more.</p>
+    </div>
+
+    <div class="grammar-card">
+      <h3>📝 Sentence Structure</h3>
+      <p>Build correct sentences using Subject + Verb + Object.</p>
+    </div>
+
+  </div>
+
+  <!-- CHECKER -->
+  <div class="grammar-check-box">
+
+  <h3 class="grammar-heading">🔍 Check Your Grammar</h3>
+
+  <div class="editor-container">
+
+    <textarea id="grammarInput" placeholder="Start writing here to check grammar..."></textarea>
+
+    <button onclick="checkGrammar()" class="check-btn">
+      ✨ Check Grammar
+    </button>
+
+  </div>
+
+  <div id="grammarResult" class="grammar-result"></div>
+
+</div>
+</div>
+
+<!-- ================= PUZZLE ================= -->
+<div id="puzzle" class="section">
+
+  <div class="puzzle-container">
+
+    <h1 class="puzzle-title">🧩 Word Scramble</h1>
+
+    <!-- SCRAMBLED WORD -->
+    <div id="scrambledWord" class="scramble-box">
+      LOADING...
+    </div>
+
+    <!-- INPUT -->
+    <input 
+      type="text" 
+      id="userAnswer" 
+      placeholder="Enter correct word"
+    >
+
+    <!-- BUTTONS -->
+    <div class="puzzle-buttons">
+      <button onclick="checkPuzzle()">✔ Check</button>
+      <button onclick="newPuzzle()">🔄 New</button>
+    </div>
+
+    <!-- RESULT -->
+    <div id="puzzleResult" class="puzzle-result"></div>
+
+  </div>
+
+</div>
+
+
+<!-- ================= FLASHCARDS ================= -->
+<div id="flashcards" class="section">
+
+  <div class="flashcard-container">
+
+    <h1 class="flash-title">🧠 Flashcards</h1>
+
+    <!-- ADD CARD -->
+    <div class="flash-inputs">
+      <input id="questionInput" placeholder="Enter Question">
+      <input id="answerInput" placeholder="Enter Answer">
+      <button onclick="addFlashcard()">➕ Add Card</button>
+    </div>
+
+    <!-- FLASHCARD -->
+    <div class="flashcard-wrapper">
+
+      <div id="flashcard" class="flashcard" onclick="flipCard()">
+
+        <div class="card-front">
+          <p id="cardQuestion">No cards yet</p>
+        </div>
+
+        <div class="card-back">
+          <p id="cardAnswer"></p>
+        </div>
+
+      </div>
+
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="flash-controls">
+      <button onclick="prevCard()">⬅ Prev</button>
+      <button onclick="nextCard()">Next ➡</button>
+      <button onclick="deleteCard()" class="delete-btn">🗑 Delete</button>
+    </div>
+
+    <!-- ALL CARDS LIST -->
+    <!-- ALL CARDS LIST -->
+<div class="flash-list">
+  <h3>📚 All Flashcards</h3>
+  <div id="flashList" class="flash-grid"></div>
+</div>
+
+  </div>
+
+</div>
+
+
+
+<!-- ================= POMODORO ================= -->
+<div id="pomodoro" class="section">
+
+  <div class="pomodoro-container">
+
+    <h1 class="pomodoro-title">🍅 Pomodoro Timer</h1>
+
+    <!-- TIMER DISPLAY -->
+    <div class="timer-circle">
+      <h2 id="timer">25:00</h2>
+    </div>
+
+    <!-- CONTROLS -->
+    <div class="pomodoro-controls">
+      <button onclick="startTimer()">▶ Start</button>
+      <button onclick="pauseTimer()">⏸ Pause</button>
+      <button onclick="resetTimer()">🔄 Reset</button>
+    </div>
+
+    <!-- LABEL -->
+    <p class="pomodoro-info">
+      Focus for 25 minutes, then take a short break ☕
+    </p>
+
+  </div>
+
+</div>
+<!-- ================= GENERAL KNOWLEDGE ================= -->
+<div id="geo" class="section">
+
+  <div class="geo-container">
+
+    <h1 class="geo-title">🌍 General Knowledge Explorer</h1>
+
+    <!-- ================= GEOGRAPHY ================= -->
+    <div class="geo-block">
+
+      <h2 class="sub-title">🌍 Geography Explorer</h2>
+
+      <div class="geo-buttons">
+        <button onclick="loadGeo('countries')">🌎 Countries</button>
+        <button onclick="loadGeo('india')">🇮🇳 India States</button>
+        <button onclick="loadGeo('oceans')">🌊 Oceans</button>
+        <button onclick="loadGeo('continents')">🌐 Continents</button>
+        <button onclick="loadGeo('deserts')">🏜 Deserts</button>
+        <button onclick="loadGeo('rivers')">🏞 Rivers</button>
+        <button onclick="loadGeo('places')">🏛 Places</button>
+      </div>
+
+    </div>
+
+    <!-- ================= SCIENCE ================= -->
+    <div class="geo-block">
+
+      <h2 class="sub-title">🔬 Science Explorer</h2>
+
+      <div class="geo-buttons">
+        <button onclick="loadScience('physics')">⚡ Physics</button>
+        <button onclick="loadScience('chemistry')">🧪 Chemistry</button>
+        <button onclick="loadScience('biology')">🧬 Biology</button>
+        <button onclick="loadScience('space')">🚀 Space</button>
+        <button onclick="loadScience('environment')">🌱 Environment</button>
+        <button onclick="loadScience('inventions')">💡 Inventions</button>
+      </div>
+
+    </div>
+
+    <!-- RESULT (COMMON) -->
+    <div id="geoResult" class="geo-result"></div>
+
+  </div>
+
+</div>
+  <!-- JS FILE -->
+  <script src="js/dashboard.js"></script>
+
+  </body>
+</html>

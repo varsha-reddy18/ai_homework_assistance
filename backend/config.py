@@ -1,0 +1,7 @@
+from dotenv import load_dotenv
+import os
+
+load_dotenv()
+
+SUPABASE_URL = os.getenv("https://xocqiaovdghvhzssmdkj.supabase.co")
+SUPABASE_KEY = os.getenv("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhvY3FpYW92ZGdodmh6c3NtZGtqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3MTMzNjkwOCwiZXhwIjoyMDg2OTEyOTA4fQ.jcd6BFu6vbXNDnqoPVzIPW0Tc8Vk5fxBlBaRYcbFYlQ")
