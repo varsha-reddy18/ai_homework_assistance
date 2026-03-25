@@ -649,99 +649,389 @@ body{
 
 
 /*--------Planner----------*/
-/* CONTAINER */
-.planner-container{
-  background:white;
-  padding:25px;
-  border-radius:15px;
-  max-width:900px;
-  margin:auto;
-  box-shadow:0 4px 15px rgba(0,0,0,0.05);
+/* ================= SMART STUDY PLANNER MODERN UI ================= */
+.smart-planner {
+  max-width: 1200px;
+  margin: auto;
+  padding: 35px;
+  border-radius: 32px;
+  background: linear-gradient(135deg, #f7faff, #eef4ff);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08);
+  animation: fadeUp 0.5s ease;
 }
 
-/* TOP INPUTS */
-.planner-top{
-  display:flex;
-  gap:10px;
-  margin-bottom:20px;
+.smart-planner h1 {
+  text-align: center;
+  font-size: 40px;
+  font-weight: 800;
+  margin-bottom: 10px;
+  color: #1f2937;
+  letter-spacing: -1px;
 }
 
-.planner-top input{
-  flex:1;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
+.planner-subtitle {
+  text-align: center;
+  color: #6b7280;
+  font-size: 17px;
+  margin-bottom: 35px;
+  line-height: 1.6;
 }
 
-/* GRID */
-.planner-grid{
-  display:flex;
-  gap:20px;
-  margin-bottom:20px;
+/* ================= TOP FORM ================= */
+.smart-top {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 18px;
+  margin-bottom: 30px;
 }
 
-.time-box, .task-box{
-  flex:1;
+.smart-top input,
+.marks-grid input,
+#studyGoal {
+  width: 100%;
+  padding: 16px 18px;
+  border-radius: 18px;
+  border: 1px solid rgba(0,0,0,0.06);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(10px);
+  font-size: 15px;
+  font-family: "Poppins", sans-serif;
+  transition: all 0.25s ease;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.04);
 }
 
-.time-box input, .task-box input{
-  width:100%;
-  margin-bottom:10px;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
+.smart-top input:focus,
+.marks-grid input:focus,
+#studyGoal:focus {
+  border-color: #6366f1;
+  box-shadow: 0 0 0 4px rgba(99,102,241,0.12);
+  transform: translateY(-2px);
+  outline: none;
 }
 
-/* TEXTAREAS */
-.goals-box, .notes-box{
-  margin-bottom:15px;
+/* ================= MARKS SECTION ================= */
+.marks-section {
+  margin: 30px 0;
 }
 
-textarea{
-  width:100%;
-  padding:10px;
-  border-radius:8px;
-  border:1px solid #ddd;
+.marks-section h3 {
+  font-size: 24px;
+  margin-bottom: 20px;
+  color: #1f2937;
 }
 
-/* SAVE BUTTON */
-.save-btn{
-  background:#3b82f6;
-  color:white;
-  border:none;
-  padding:10px 20px;
-  border-radius:10px;
-  cursor:pointer;
-  margin-top:10px;
+.marks-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
 }
 
-/* TASK LIST */
-.task-display{
-  margin-top:20px;
+.mark-card {
+  background: rgba(255,255,255,0.85);
+  backdrop-filter: blur(10px);
+  padding: 22px;
+  border-radius: 24px;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+  border: 1px solid rgba(255,255,255,0.7);
+  transition: 0.3s ease;
 }
 
-#taskList li{
-  background:#eef2ff;
-  padding:10px;
-  margin-bottom:8px;
-  border-radius:8px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
+.mark-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 18px 35px rgba(0,0,0,0.08);
 }
 
-#taskList button{
-  background:#ef4444;
-  color:white;
-  border:none;
-  border-radius:6px;
-  padding:5px 8px;
-  cursor:pointer;
-}
-#taskList li span{
-  cursor:pointer;
+.mark-card label {
+  display: block;
+  margin-bottom: 12px;
+  font-weight: 700;
+  color: #374151;
+  font-size: 15px;
 }
 
+/* ================= GOAL BOX ================= */
+.goals-box {
+  margin-top: 25px;
+}
+
+.goals-box h3 {
+  font-size: 24px;
+  margin-bottom: 15px;
+  color: #1f2937;
+}
+
+.goals-box textarea {
+  min-height: 120px;
+  resize: vertical;
+}
+
+/* ================= BUTTON ================= */
+.save-btn {
+  display: block;
+  width: fit-content;
+  margin: 30px auto 0;
+  padding: 16px 34px;
+  border: none;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #6366f1, #8b5cf6);
+  color: white;
+  font-size: 17px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 0 15px 30px rgba(99,102,241,0.3);
+  transition: all 0.3s ease;
+}
+
+.save-btn:hover {
+  transform: translateY(-3px) scale(1.03);
+  box-shadow: 0 20px 35px rgba(99,102,241,0.35);
+}
+
+/* ================= OUTPUT SECTION ================= */
+.planner-output {
+  margin-top: 40px;
+}
+
+.planner-result-card {
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+  border-radius: 32px;
+  padding: 35px;
+  box-shadow: 0 20px 45px rgba(0,0,0,0.08);
+  animation: fadeUp 0.5s ease;
+}
+
+/* ================= STUDENT SUMMARY ================= */
+.student-summary {
+  text-align: center;
+  margin-bottom: 30px;
+  padding: 25px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #eef2ff, #f5f3ff);
+  box-shadow: inset 0 0 0 1px rgba(99,102,241,0.06);
+}
+
+.student-summary h2 {
+  font-size: 30px;
+  margin-bottom: 10px;
+  color: #1f2937;
+}
+
+.student-summary p {
+  color: #4b5563;
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+/* ================= PERFORMANCE BOX ================= */
+.performance-box {
+  text-align: center;
+  padding: 24px;
+  border-radius: 26px;
+  margin-bottom: 30px;
+  color: white;
+  font-weight: 700;
+  box-shadow: 0 18px 35px rgba(0,0,0,0.12);
+}
+
+.performance-box h2 {
+  font-size: 34px;
+  margin-bottom: 8px;
+}
+
+.performance-box p {
+  font-size: 18px;
+}
+
+.excellent-performance {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+}
+
+.good-performance {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+}
+
+.average-performance {
+  background: linear-gradient(135deg, #f59e0b, #fbbf24);
+}
+
+.poor-performance {
+  background: linear-gradient(135deg, #dc2626, #ef4444);
+}
+
+/* ================= SUBJECT RESULT GRID ================= */
+.marks-result-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin: 30px 0;
+}
+
+.subject-result-card {
+  background: rgba(255,255,255,0.9);
+  border-radius: 24px;
+  padding: 24px;
+  text-align: center;
+  box-shadow: 0 12px 28px rgba(0,0,0,0.06);
+  transition: 0.3s ease;
+  border: 1px solid rgba(0,0,0,0.04);
+}
+
+.subject-result-card:hover {
+  transform: translateY(-6px);
+}
+
+.subject-result-card h4 {
+  font-size: 20px;
+  margin-bottom: 10px;
+  color: #111827;
+}
+
+.subject-result-card p {
+  font-size: 24px;
+  font-weight: 700;
+  color: #6366f1;
+}
+
+/* ================= STRONG / WEAK ================= */
+.strength-weak-grid,
+.tips-plan-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 24px;
+  margin-top: 30px;
+}
+
+.analysis-box,
+.tips-box,
+.daily-plan-box,
+.weekly-plan-box {
+  background: rgba(255,255,255,0.92);
+  border-radius: 26px;
+  padding: 26px;
+  box-shadow: 0 14px 30px rgba(0,0,0,0.06);
+  transition: 0.3s ease;
+}
+
+.analysis-box:hover,
+.tips-box:hover,
+.daily-plan-box:hover,
+.weekly-plan-box:hover {
+  transform: translateY(-5px);
+}
+
+.analysis-box h3,
+.tips-box h3,
+.daily-plan-box h3,
+.weekly-plan-box h3 {
+  font-size: 24px;
+  margin-bottom: 16px;
+  color: #1f2937;
+}
+
+.analysis-box ul,
+.tips-box ul,
+.daily-plan-box ul {
+  padding-left: 22px;
+  line-height: 2;
+  color: #374151;
+  font-size: 15px;
+}
+
+.weak-box {
+  border-top: 8px solid #ef4444;
+  background: linear-gradient(135deg, #fff5f5, #ffffff);
+}
+
+.strong-box {
+  border-top: 8px solid #10b981;
+  background: linear-gradient(135deg, #f0fdf4, #ffffff);
+}
+
+/* ================= WEEKLY GRID ================= */
+.weekly-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 14px;
+  margin-top: 20px;
+}
+
+.week-day {
+  background: linear-gradient(135deg, #eef2ff, #f8faff);
+  padding: 18px 12px;
+  border-radius: 20px;
+  text-align: center;
+  font-weight: 700;
+  color: #1f2937;
+  box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+  transition: 0.25s ease;
+}
+
+.week-day:hover {
+  transform: scale(1.05);
+}
+
+.week-day span {
+  display: block;
+  margin-top: 8px;
+  font-size: 14px;
+  font-weight: 500;
+  color: #6366f1;
+}
+
+/* ================= ANIMATION ================= */
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(25px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 992px) {
+  .smart-top,
+  .marks-grid,
+  .marks-result-grid,
+  .strength-weak-grid,
+  .tips-plan-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .weekly-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .smart-top,
+  .marks-grid,
+  .marks-result-grid,
+  .strength-weak-grid,
+  .tips-plan-grid,
+  .weekly-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .smart-planner {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .smart-planner h1 {
+    font-size: 30px;
+  }
+
+  .student-summary h2 {
+    font-size: 24px;
+  }
+
+  .performance-box h2 {
+    font-size: 28px;
+  }
+}
 /* ===== QUIZ START SCREEN ===== */
 /* CENTER FULL SCREEN */
 #quiz{

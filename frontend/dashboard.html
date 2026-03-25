@@ -166,66 +166,75 @@
 
 
 <!-- ================= PLANNER ================= -->
+<!-- ================= SMART STUDY PLANNER ================= -->
 <div id="planner" class="section">
 
-  <div class="planner-container">
+  <div class="planner-container smart-planner">
 
-    <h1>📅 Daily Study Planner</h1>
+    <h1>📅 Smart Study Planner</h1>
+    <p class="planner-subtitle">
+      Enter your previous marks and get your performance level, study tips, and a personalized study plan.
+    </p>
 
-    <!-- TOP -->
-    <div class="planner-top">
-      <input id="studentName" placeholder="Enter Name">
+    <!-- STUDENT DETAILS -->
+    <div class="planner-top smart-top">
+      <input id="studentName" placeholder="👩‍🎓 Enter Student Name">
+      <input id="studentClass" placeholder="🏫 Enter Class (Example: 10th / Inter / B.Tech)">
       <input type="date" id="date">
     </div>
 
-    <!-- TIME + TASK GRID -->
-    <div class="planner-grid">
+    <!-- SUBJECT MARKS -->
+    <div class="marks-section">
+      <h3>📊 Enter Previous Marks</h3>
 
-      <!-- TIME -->
-      <div class="time-box">
-        <h3>⏰ Time</h3>
-        <input placeholder="8:00 - 9:00 AM">
-        <input placeholder="10:00 - 11:00 AM">
-        <input placeholder="1:00 - 2:00 PM">
-        <input placeholder="3:00 - 4:00 PM">
+      <div class="marks-grid">
+        <div class="mark-card">
+          <label>📘 English</label>
+          <input type="number" id="markEnglish" placeholder="Out of 100">
+        </div>
+
+        <div class="mark-card">
+          <label>➗ Maths</label>
+          <input type="number" id="markMaths" placeholder="Out of 100">
+        </div>
+
+        <div class="mark-card">
+          <label>🔬 Science</label>
+          <input type="number" id="markScience" placeholder="Out of 100">
+        </div>
+
+        <div class="mark-card">
+          <label>🌍 Social</label>
+          <input type="number" id="markSocial" placeholder="Out of 100">
+        </div>
+
+        <div class="mark-card">
+          <label>💻 Computer</label>
+          <input type="number" id="markComputer" placeholder="Out of 100">
+        </div>
+
+        <div class="mark-card">
+          <label>📝 Optional Subject</label>
+          <input type="number" id="markOptional" placeholder="Out of 100">
+        </div>
       </div>
-
-      <!-- TASK -->
-      <div class="task-box">
-        <h3>📚 Subject / Task</h3>
-        <input placeholder="Math - Practice">
-        <input placeholder="Science - Notes">
-        <input placeholder="AI - Coding">
-        <input placeholder="English - Reading">
-      </div>
-
     </div>
 
     <!-- GOALS -->
     <div class="goals-box">
-      <h3>🎯 Daily Goals</h3>
-      <textarea placeholder="Write your goals..."></textarea>
-    </div>
-
-    <!-- NOTES -->
-    <div class="notes-box">
-      <h3>📝 Notes</h3>
-      <textarea placeholder="Write notes here..."></textarea>
+      <h3>🎯 Study Goal</h3>
+      <textarea id="studyGoal" placeholder="Example: I want to improve Maths and score above 90% in exams"></textarea>
     </div>
 
     <!-- SAVE BUTTON -->
-    <button class="save-btn" onclick="savePlanner()">💾 Save Plan</button>
+    <button class="save-btn" onclick="generateStudyPlanner()">🚀 Generate My Study Planner</button>
 
-    <!-- SAVED TASKS DISPLAY -->
-    <div class="task-display">
-      <h3>📌 Your Plan</h3>
-      <ul id="taskList"></ul>
-    </div>
+    <!-- OUTPUT -->
+    <div id="plannerOutput" class="planner-output"></div>
 
   </div>
 
-</div>
-  
+</div>  
 <!-- ================= QUIZ ================= -->
 <div id="quiz" class="section">
 

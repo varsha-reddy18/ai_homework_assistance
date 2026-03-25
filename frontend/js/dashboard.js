@@ -374,41 +374,193 @@ window.speechSynthesis.speak(speech)
 
 /* planner, quiz, puzzle, grammar etc remain same */
 /* ================= PLANNER ================= */
+/* ================= SMART STUDY PLANNER ================= */
 
-function savePlanner(){
-
-  const name = document.getElementById("studentName").value;
+function generateStudyPlanner() {
+  const name = document.getElementById("studentName").value.trim();
+  const studentClass = document.getElementById("studentClass").value.trim();
   const date = document.getElementById("date").value;
+  const goal = document.getElementById("studyGoal").value.trim();
 
-  const times = document.querySelectorAll(".time-box input");
-  const tasks = document.querySelectorAll(".task-box input");
+  const marks = [
+    { subject: "English", mark: parseFloat(document.getElementById("markEnglish").value) || 0 },
+    { subject: "Maths", mark: parseFloat(document.getElementById("markMaths").value) || 0 },
+    { subject: "Science", mark: parseFloat(document.getElementById("markScience").value) || 0 },
+    { subject: "Social", mark: parseFloat(document.getElementById("markSocial").value) || 0 },
+    { subject: "Computer", mark: parseFloat(document.getElementById("markComputer").value) || 0 },
+    { subject: "Optional Subject", mark: parseFloat(document.getElementById("markOptional").value) || 0 }
+  ];
 
-  const taskList = document.getElementById("taskList");
+  if (!name || !studentClass || !date) {
+    alert("⚠️ Please fill Student Name, Class, and Date.");
+    return;
+  }
 
-  // CLEAR OLD
-  taskList.innerHTML = "";
-
-  for(let i = 0; i < tasks.length; i++){
-
-    let taskValue = tasks[i].value.trim();
-    let timeValue = times[i].value.trim();
-
-    if(taskValue !== ""){
-
-      const li = document.createElement("li");
-
-      li.innerHTML = `
-        <span onclick="this.style.textDecoration='line-through'">
-          ⏰ ${timeValue || "No Time"} - ${taskValue}
-        </span>
-        <button onclick="this.parentElement.remove()">❌</button>
-      `;
-
-      taskList.appendChild(li);
+  // Validate marks
+  for (let item of marks) {
+    if (item.mark < 0 || item.mark > 100) {
+      alert(`⚠️ Please enter valid marks for ${item.subject} between 0 and 100.`);
+      return;
     }
   }
 
-  alert("✅ Plan saved for " + name + " on " + date);
+  const total = marks.reduce((sum, item) => sum + item.mark, 0);
+  const average = (total / marks.length).toFixed(2);
+
+  let performance = "";
+  let performanceClass = "";
+  let tips = [];
+  let dailyPlan = [];
+
+  if (average >= 90) {
+    performance = "🌟 Excellent";
+    performanceClass = "excellent-performance";
+    tips = [
+      "Maintain your strong study routine.",
+      "Solve advanced-level questions regularly.",
+      "Take weekly mock tests to stay sharp.",
+      "Revise important concepts every weekend.",
+      "Avoid overconfidence and stay consistent."
+    ];
+    dailyPlan = [
+      "📘 1 hour concept revision",
+      "🧠 45 mins mock test / problem solving",
+      "📝 30 mins short notes revision",
+      "📚 30 mins weak topic polishing"
+    ];
+  }
+  else if (average >= 75) {
+    performance = "✅ Good";
+    performanceClass = "good-performance";
+    tips = [
+      "You are doing well, but consistency is key.",
+      "Focus more on high-weight chapters.",
+      "Practice writing answers neatly and quickly.",
+      "Revise weekly to avoid forgetting topics.",
+      "Take subject-wise mini tests."
+    ];
+    dailyPlan = [
+      "📘 1 hour subject revision",
+      "✍️ 45 mins practice questions",
+      "📚 30 mins revision of previous topics",
+      "🎯 20 mins goal-based improvement"
+    ];
+  }
+  else if (average >= 50) {
+    performance = "⚠️ Average";
+    performanceClass = "average-performance";
+    tips = [
+      "You need more consistency in daily study.",
+      "Spend extra time on weak subjects.",
+      "Practice textbook and previous paper questions.",
+      "Use short notes and flashcards for revision.",
+      "Study in small focused sessions every day."
+    ];
+    dailyPlan = [
+      "📘 45 mins concept learning",
+      "✍️ 45 mins practice",
+      "🔁 30 mins revision",
+      "🧠 20 mins memorization / formulas"
+    ];
+  }
+  else {
+    performance = "❌ Poor";
+    performanceClass = "poor-performance";
+    tips = [
+      "Start with basics before difficult topics.",
+      "Study daily for short sessions instead of long stressful hours.",
+      "Focus first on your weakest subjects.",
+      "Ask teachers or friends whenever you have doubts.",
+      "Revise every day and practice simple questions first."
+    ];
+    dailyPlan = [
+      "📘 30 mins basics learning",
+      "✍️ 30 mins easy practice questions",
+      "🔁 20 mins revision",
+      "🧠 20 mins formulas / definitions",
+      "📚 20 mins weak subject support"
+    ];
+  }
+
+  // Weak and strong subjects
+  const sortedMarks = [...marks].sort((a, b) => a.mark - b.mark);
+  const weakSubjects = sortedMarks.slice(0, 2);
+  const strongSubjects = [...marks].sort((a, b) => b.mark - a.mark).slice(0, 2);
+
+  const marksHTML = marks.map(item => `
+    <div class="subject-result-card">
+      <h4>${item.subject}</h4>
+      <p>${item.mark} / 100</p>
+    </div>
+  `).join("");
+
+  const tipsHTML = tips.map(tip => `<li>${tip}</li>`).join("");
+  const planHTML = dailyPlan.map(item => `<li>${item}</li>`).join("");
+
+  document.getElementById("plannerOutput").innerHTML = `
+    <div class="planner-result-card">
+
+      <div class="student-summary">
+        <h2>👩‍🎓 ${name}'s Study Report</h2>
+        <p><b>Class:</b> ${studentClass}</p>
+        <p><b>Date:</b> ${date}</p>
+        <p><b>Goal:</b> ${goal || "No specific goal entered"}</p>
+      </div>
+
+      <div class="performance-box ${performanceClass}">
+        <h2>${performance}</h2>
+        <p>Average Marks: <b>${average}%</b></p>
+      </div>
+
+      <div class="marks-result-grid">
+        ${marksHTML}
+      </div>
+
+      <div class="strength-weak-grid">
+        <div class="analysis-box weak-box">
+          <h3>📉 Weak Subjects</h3>
+          <ul>
+            <li>${weakSubjects[0].subject} (${weakSubjects[0].mark})</li>
+            <li>${weakSubjects[1].subject} (${weakSubjects[1].mark})</li>
+          </ul>
+        </div>
+
+        <div class="analysis-box strong-box">
+          <h3>📈 Strong Subjects</h3>
+          <ul>
+            <li>${strongSubjects[0].subject} (${strongSubjects[0].mark})</li>
+            <li>${strongSubjects[1].subject} (${strongSubjects[1].mark})</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="tips-plan-grid">
+        <div class="tips-box">
+          <h3>💡 Personalized Study Tips</h3>
+          <ul>${tipsHTML}</ul>
+        </div>
+
+        <div class="daily-plan-box">
+          <h3>📅 Recommended Daily Study Plan</h3>
+          <ul>${planHTML}</ul>
+        </div>
+      </div>
+
+      <div class="weekly-plan-box">
+        <h3>🗓️ Weekly Study Strategy</h3>
+        <div class="weekly-grid">
+          <div class="week-day">Mon<br><span>${weakSubjects[0].subject}</span></div>
+          <div class="week-day">Tue<br><span>${weakSubjects[1].subject}</span></div>
+          <div class="week-day">Wed<br><span>Revision</span></div>
+          <div class="week-day">Thu<br><span>${strongSubjects[0].subject}</span></div>
+          <div class="week-day">Fri<br><span>${strongSubjects[1].subject}</span></div>
+          <div class="week-day">Sat<br><span>Mock Test</span></div>
+          <div class="week-day">Sun<br><span>Light Revision</span></div>
+        </div>
+      </div>
+
+    </div>
+  `;
 }
 
 function toggleComplete(element){
