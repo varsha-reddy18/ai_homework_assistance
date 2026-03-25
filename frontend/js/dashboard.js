@@ -50,88 +50,189 @@ function updateStreak(){
   document.getElementById("streakCount").innerText = streak;
 }
 /* ================= CHATGPT STYLE AI ================= */
-async function askAI() {
+/* ================= SUBJECT CHAT SYSTEM ================= */
 
-  if (isLoading) return;
+let selectedSubject = "";
+let currentChatId = null;
 
-  const input = document.getElementById("question");
-  const chat = document.getElementById("chatArea");
-  const user_id = localStorage.getItem("user_id");
+/* OPEN SUBJECT */
+function openSubject(subject){
+  selectedSubject = subject;
 
-  const userText = input.value.trim();
-  if (!userText) return;
+  // switch to Ask AI section
+  showSection("ask");
 
-  input.value = "";
+  // load subject's last chat if exists
+  let savedChat = localStorage.getItem(subject + "_currentChatId");
 
-  // USER MESSAGE
-  chat.innerHTML += `
-    <div class="chat-row user">
-      <div class="chat-bubble user-bubble">${userText}</div>
+  if(savedChat){
+    currentChatId = savedChat;
+  }else{
+    currentChatId = "chat_" + Date.now();
+    localStorage.setItem(subject + "_currentChatId", currentChatId);
+    localStorage.setItem(subject + "_" + currentChatId, JSON.stringify([]));
+  }
+
+  loadChat(currentChatId);
+  renderChatList();
+}
+
+/* CREATE NEW CHAT */
+function createNewChat(){
+
+  if(!selectedSubject){
+    alert("Please select a subject first!");
+    return;
+  }
+
+  const chatId = "chat_" + Date.now();
+  currentChatId = chatId;
+
+  localStorage.setItem(selectedSubject + "_currentChatId", chatId);
+  localStorage.setItem(selectedSubject + "_" + chatId, JSON.stringify([]));
+
+  document.getElementById("chatArea").innerHTML = `
+    <div class="subject-banner">📘 ${selectedSubject} Mode Activated</div>
+  `;
+
+  renderChatList();
+}
+
+/* RENDER CHAT LIST */
+function renderChatList(){
+
+  const chatList = document.getElementById("chatList");
+  chatList.innerHTML = "";
+
+  if(!selectedSubject){
+    chatList.innerHTML = `<div class="chat-empty">Select a subject first</div>`;
+    return;
+  }
+
+  Object.keys(localStorage).forEach(key => {
+
+    if(key.startsWith(selectedSubject + "_chat_")){
+
+      const chatId = key.replace(selectedSubject + "_", "");
+
+      chatList.innerHTML += `
+        <div class="chat-item ${chatId === currentChatId ? 'active' : ''}" onclick="loadChat('${chatId}')">
+          💬 ${selectedSubject} Chat ${chatId.slice(-4)}
+        </div>
+      `;
+    }
+  });
+}
+
+/* LOAD CHAT */
+function loadChat(chatId){
+
+  currentChatId = chatId;
+  localStorage.setItem(selectedSubject + "_currentChatId", chatId);
+
+  let key = selectedSubject + "_" + chatId;
+  let chatData = JSON.parse(localStorage.getItem(key)) || [];
+
+  let chatArea = document.getElementById("chatArea");
+  chatArea.innerHTML = `
+    <div class="subject-banner">📘 ${selectedSubject} Mode Activated</div>
+  `;
+
+  chatData.forEach(msg => {
+    chatArea.innerHTML += `
+      <div class="user-msg">
+        <div class="msg-text">${msg.q}</div>
+      </div>
+      <div class="ai-msg">${msg.a}</div>
+    `;
+  });
+
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+/* ASK AI */
+async function askAI(){
+
+  let questionInput = document.getElementById("question");
+  let question = questionInput.value.trim();
+
+  if(!question) return;
+
+  if(!selectedSubject){
+    alert("Please select a subject first!");
+    return;
+  }
+
+  const chatArea = document.getElementById("chatArea");
+
+  // show user message only once
+  chatArea.innerHTML += `
+    <div class="user-msg">
+      <div class="msg-text">${question}</div>
     </div>
   `;
 
-  chat.scrollTop = chat.scrollHeight;
+  // loading
+  let loading = document.createElement("div");
+  loading.className = "ai-msg";
+  loading.innerHTML = "🤖 Thinking...";
+  chatArea.appendChild(loading);
 
-  // LOADING
-  const loadingDiv = document.createElement("div");
-  loadingDiv.className = "ai-msg";
-  loadingDiv.innerText = "🤖 Thinking...";
-  chat.appendChild(loadingDiv);
+  chatArea.scrollTop = chatArea.scrollHeight;
 
-  isLoading = true;
+  try{
 
-  let answerText = "";
-
-  try {
-
-    const res = await fetch("http://127.0.0.1:8000/ask", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ question: userText, user_id })
+    const res = await fetch("http://127.0.0.1:8000/ask",{
+      method:"POST",
+      headers:{
+        "Content-Type":"application/json"
+      },
+      body: JSON.stringify({
+        question: question,
+        subject: selectedSubject,
+        session_id: currentChatId,
+        user_id: localStorage.getItem("user_id") || null
+      })
     });
 
     const data = await res.json();
-    answerText = data.answer || "No response";
 
-    loadingDiv.remove();
+    loading.remove();
 
-    chat.innerHTML += `
-      <div class="chat-row ai">
-        <div class="chat-bubble ai-bubble">${answerText}</div>
-      </div>
+    let answer = data.answer || "⚠ No answer found";
+
+    // format answer
+    answer = answer
+      .replace(/\n/g, "<br>")
+      .replace(/📘/g, "📘 ")
+      .replace(/✅/g, "<br><br>✅ ");
+
+    chatArea.innerHTML += `
+      <div class="ai-msg">${answer}</div>
     `;
 
-    chat.scrollTop = chat.scrollHeight;
-
-    speakText(answerText);
-
-  } catch (err) {
-
-    loadingDiv.remove();
-    answerText = "⚠ Error connecting to AI";
-
-    chat.innerHTML += `
-      <div class="chat-row ai">
-        <div class="chat-bubble ai-bubble">${answerText}</div>
-      </div>
-    `;
-  }
-
-  // SAVE CHAT
-  if (currentChatId) {
-
-    let chatData = JSON.parse(localStorage.getItem(currentChatId)) || [];
+    // save subject-wise
+    let key = selectedSubject + "_" + currentChatId;
+    let chatData = JSON.parse(localStorage.getItem(key)) || [];
 
     chatData.push({
-      q: userText,
-      a: answerText
+      q: question,
+      a: answer
     });
 
-    localStorage.setItem(currentChatId, JSON.stringify(chatData));
+    localStorage.setItem(key, JSON.stringify(chatData));
+
+    renderChatList();
+
+  }catch(error){
+    loading.remove();
+    chatArea.innerHTML += `
+      <div class="ai-msg">⚠ Error</div>
+    `;
   }
 
-  // 🔥 IMPORTANT FIX
-  isLoading = false;
+  questionInput.value = "";
+  chatArea.scrollTop = chatArea.scrollHeight;
 }
 /* ================= VOICE INPUT ================= */
 let recognition
@@ -268,58 +369,7 @@ currentSpeech = speech
 
 window.speechSynthesis.speak(speech)
 }
-let currentChatId = null
 
-function createNewChat(){
-
-const chatId = "chat_" + Date.now()
-currentChatId = chatId
-
-localStorage.setItem("currentChatId", chatId)
-localStorage.setItem(chatId, JSON.stringify([]))
-
-renderChatList()
-document.getElementById("chatArea").innerHTML = ""
-}
-
-function renderChatList(){
-
-const chatList = document.getElementById("chatList")
-chatList.innerHTML = ""
-
-Object.keys(localStorage).forEach(key=>{
-if(key.startsWith("chat_")){
-chatList.innerHTML += `
-<div class="chat-item ${key === currentChatId ? 'active' : ''}" onclick="loadChat('${key}')">
-💬 Chat ${key.slice(-4)}
-</div>
-`
-}
-})
-}
-
-function loadChat(chatId){
-
-currentChatId = chatId
-localStorage.setItem("currentChatId", chatId)
-
-const chat = JSON.parse(localStorage.getItem(chatId)) || []
-
-const chatArea = document.getElementById("chatArea")
-chatArea.innerHTML = ""
-
-chat.forEach(msg=>{
-chatArea.innerHTML += `
-<div class="chat-row user">
-  <div class="chat-bubble user-bubble">${msg.q}</div>
-</div>
-
-<div class="chat-row ai">
-  <div class="chat-bubble ai-bubble">${msg.a}</div>
-</div>
-`
-})
-}
 /* ================= REST OF YOUR CODE (UNCHANGED) ================= */
 
 /* planner, quiz, puzzle, grammar etc remain same */
@@ -566,24 +616,22 @@ document.getElementById("puzzleResult").innerText = "❌ Try Again!";
 document.getElementById("puzzleResult").style.color = "red";
 }
 }
+window.addEventListener("load", function () {
+  newPuzzle();
+  updateStreak();
+  renderChatList();
+  updateDisplay();
 
-window.onload = function(){
+  const savedChat = localStorage.getItem("currentChatId");
 
-// existing
-newPuzzle()
-updateStreak();
-// 🔥 CHAT SYSTEM
-renderChatList()
+  if (savedChat) {
+    loadChat(savedChat);
+  }
 
-const savedChat = localStorage.getItem("currentChatId")
-
-if(savedChat){
-loadChat(savedChat)
-}else{
-createNewChat()
-}
-
-}
+  if (localStorage.getItem("theme") === "dark") {
+    document.body.classList.add("dark-mode");
+  }
+});
 function savePlanner(){
 
 const name = document.getElementById("studentName").value
@@ -769,11 +817,6 @@ function toggleDark(){
 }
 
 // Load theme
-window.onload = () => {
-  if (localStorage.getItem("theme") === "dark") {
-    document.body.classList.add("dark");
-  }
-};
 
 
 
@@ -1064,3 +1107,299 @@ document.addEventListener("click", function(e){
     menu.classList.remove("show");
   }
 });
+
+
+/* ================= GRAMMAR TOPIC DISPLAY ================= */
+
+function openGrammarTopic(topic) {
+  const display = document.getElementById("grammarTopicDisplay");
+
+  if (topic === "tenses") {
+    display.innerHTML = `
+      <div class="grammar-topic-box">
+        <h2 class="topic-main-title">📘 Tenses Chart</h2>
+
+        <div class="tense-wrapper">
+          <div class="tense-column present">
+            <h3>Present Tenses</h3>
+
+            <div class="tense-card-box">
+              <h4>Simple Present Tense</h4>
+              <p><b>Structure:</b> Subject + V1 + Object</p>
+              <p><b>Example:</b> I always speak the truth.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Present Continuous Tense</h4>
+              <p><b>Structure:</b> Subject + is/am/are + V1 + ing + Object</p>
+              <p><b>Example:</b> Ali is riding a bicycle.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Present Perfect Tense</h4>
+              <p><b>Structure:</b> Subject + has/have + V3 + Object</p>
+              <p><b>Example:</b> The sun has set.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Present Perfect Continuous Tense</h4>
+              <p><b>Structure:</b> Subject + has/have + been + V1 + ing + since/for</p>
+              <p><b>Example:</b> The sun has been shining since morning.</p>
+            </div>
+          </div>
+
+          <div class="tense-column past">
+            <h3>Past Tenses</h3>
+
+            <div class="tense-card-box">
+              <h4>Simple Past Tense</h4>
+              <p><b>Structure:</b> Subject + V2 + Object</p>
+              <p><b>Example:</b> We went to the zoo yesterday.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Past Continuous Tense</h4>
+              <p><b>Structure:</b> Subject + was/were + V1 + ing + Object</p>
+              <p><b>Example:</b> He was smiling.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Past Perfect Tense</h4>
+              <p><b>Structure:</b> Subject + had + V3 + Object</p>
+              <p><b>Example:</b> They had already finished their work.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Past Perfect Continuous Tense</h4>
+              <p><b>Structure:</b> Subject + had been + V1 + ing + since/for</p>
+              <p><b>Example:</b> The carpenter had been making chairs for many days.</p>
+            </div>
+          </div>
+
+          <div class="tense-column future">
+            <h3>Future Tenses</h3>
+
+            <div class="tense-card-box">
+              <h4>Simple Future Tense</h4>
+              <p><b>Structure:</b> Subject + will/shall + V1 + Object</p>
+              <p><b>Example:</b> You will pass the examination.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Future Continuous Tense</h4>
+              <p><b>Structure:</b> Subject + will/shall + be + V1 + ing + Object</p>
+              <p><b>Example:</b> They will be visiting the zoo.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Future Perfect Tense</h4>
+              <p><b>Structure:</b> Subject + will/shall + have + V3 + Object</p>
+              <p><b>Example:</b> I shall have finished my homework.</p>
+            </div>
+
+            <div class="tense-card-box">
+              <h4>Future Perfect Continuous Tense</h4>
+              <p><b>Structure:</b> Subject + will/shall + have been + V1 + ing + since/for</p>
+              <p><b>Example:</b> She will have been sleeping since evening.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  else if (topic === "parts") {
+    display.innerHTML = `
+      <div class="grammar-topic-box">
+        <h2 class="topic-main-title">🧩 Parts of Speech</h2>
+
+        <div class="parts-grid">
+
+          <div class="part-card noun">
+            <h3>Noun</h3>
+            <p><b>Definition:</b> A word that names a person, place, thing, or idea.</p>
+            <p><b>Examples:</b> cat, John, park, happiness</p>
+          </div>
+
+          <div class="part-card pronoun">
+            <h3>Pronoun</h3>
+            <p><b>Definition:</b> A word that takes the place of a noun.</p>
+            <p><b>Examples:</b> she, they, it</p>
+          </div>
+
+          <div class="part-card verb">
+            <h3>Verb</h3>
+            <p><b>Definition:</b> A word that expresses action or state of being.</p>
+            <p><b>Examples:</b> runs, sings, are</p>
+          </div>
+
+          <div class="part-card adjective">
+            <h3>Adjective</h3>
+            <p><b>Definition:</b> A word that describes a noun.</p>
+            <p><b>Examples:</b> fluffy, tall, delicious</p>
+          </div>
+
+          <div class="part-card adverb">
+            <h3>Adverb</h3>
+            <p><b>Definition:</b> A word that modifies a verb, adjective, or adverb.</p>
+            <p><b>Examples:</b> beautifully, quickly, confidently</p>
+          </div>
+
+          <div class="part-card preposition">
+            <h3>Preposition</h3>
+            <p><b>Definition:</b> Shows relationship of a noun/pronoun to another word.</p>
+            <p><b>Examples:</b> under, through, beside</p>
+          </div>
+
+          <div class="part-card conjunction">
+            <h3>Conjunction</h3>
+            <p><b>Definition:</b> Connects words, phrases, or clauses.</p>
+            <p><b>Examples:</b> and, or, because</p>
+          </div>
+
+          <div class="part-card interjection">
+            <h3>Interjection</h3>
+            <p><b>Definition:</b> A word that expresses emotion or exclamation.</p>
+            <p><b>Examples:</b> wow!, ouch!, yay!</p>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
+
+  else if (topic === "voice") {
+    display.innerHTML = `
+      <div class="grammar-topic-box">
+        <h2 class="topic-main-title">🔄 Active & Passive Voice</h2>
+
+        <div class="voice-grid">
+          <div class="voice-card active-box">
+            <h3>Active Voice</h3>
+            <p>Tells us what a <b>person or thing does</b>.</p>
+            <p>The subject performs the action on the object.</p>
+            <p class="formula">Subject + Verb + Object</p>
+
+            <h4>Examples:</h4>
+            <ul>
+              <li>Anna painted the house.</li>
+              <li>The teacher answers the student's questions.</li>
+              <li>Ali posted the video online.</li>
+            </ul>
+          </div>
+
+          <div class="voice-card passive-box">
+            <h3>Passive Voice</h3>
+            <p>Tells us what is <b>done to someone or something</b>.</p>
+            <p>The subject is being acted upon.</p>
+            <p class="formula">Object + Verb + Subject</p>
+
+            <h4>Examples:</h4>
+            <ul>
+              <li>The house was painted by Anna.</li>
+              <li>The student's questions are answered by the teacher.</li>
+              <li>The video was posted online by Ali.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  else if (topic === "vocabulary") {
+    display.innerHTML = `
+      <div class="grammar-topic-box">
+        <h2 class="topic-main-title">📚 Vocabulary Levels</h2>
+
+        <div class="vocab-grid">
+          <div class="vocab-card beginner">
+            <h3>Beginner</h3>
+            <ul>
+              <li>keep</li><li>run</li><li>walk</li><li>wait</li><li>happy</li>
+              <li>sad</li><li>afraid</li><li>tiny</li><li>cold</li><li>big</li>
+            </ul>
+          </div>
+
+          <div class="vocab-card intermediate">
+            <h3>Intermediate</h3>
+            <ul>
+              <li>hold</li><li>jog</li><li>stroll</li><li>delay</li><li>glad</li>
+              <li>anxious</li><li>starving</li><li>clear</li><li>massive</li><li>simple</li>
+            </ul>
+          </div>
+
+          <div class="vocab-card advanced">
+            <h3>Advanced</h3>
+            <ul>
+              <li>retain</li><li>sprint</li><li>wander</li><li>postpone</li><li>delighted</li>
+              <li>terrified</li><li>famished</li><li>enormous</li><li>intricate</li><li>effortless</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    `;
+  }
+
+  else if (topic === "punctuation") {
+    display.innerHTML = `
+      <div class="grammar-topic-box">
+        <h2 class="topic-main-title">✍️ Punctuation Marks</h2>
+
+        <div class="punctuation-grid">
+
+          <div class="punc-card"><h3>Period (.)</h3><p>Sophia loves playing hockey.</p></div>
+          <div class="punc-card"><h3>Question Mark (?)</h3><p>Are you hungry?</p></div>
+          <div class="punc-card"><h3>Comma (,)</h3><p>I like novels, stories, plays, and poems.</p></div>
+          <div class="punc-card"><h3>Exclamation Mark (!)</h3><p>Wow! What a lovely scene!</p></div>
+          <div class="punc-card"><h3>Colon (:)</h3><p>She likes three countries: Italy, USA, and UAE.</p></div>
+          <div class="punc-card"><h3>Semicolon (;)</h3><p>I will not prefer cola; I will drink juice.</p></div>
+          <div class="punc-card"><h3>Braces { }</h3><p>Choose one of three colors {red, pink, black}.</p></div>
+          <div class="punc-card"><h3>Parentheses ( )</h3><p>I love to visit UK (United Kingdom).</p></div>
+          <div class="punc-card"><h3>Dashes (—)</h3><p>USA—Japan is almost 13 hours long flight.</p></div>
+          <div class="punc-card"><h3>Brackets [ ]</h3><p>She [Jenny] is crazy for driving a truck.</p></div>
+          <div class="punc-card"><h3>Hyphen (-)</h3><p>I love ice-cream.</p></div>
+          <div class="punc-card"><h3>Quotation Marks (" ")</h3><p>Ali asked, “When can I put the pen back?”</p></div>
+          <div class="punc-card"><h3>Ellipsis (...)</h3><p>Julie... Julie is the girl who...</p></div>
+          <div class="punc-card"><h3>Apostrophe (')</h3><p>Roger’s dog is weak.</p></div>
+
+        </div>
+      </div>
+    `;
+  }
+
+  else if (topic === "sentence") {
+    display.innerHTML = `
+      <div class="grammar-topic-box">
+        <h2 class="topic-main-title">📝 Sentence Structures</h2>
+
+        <div class="sentence-grid">
+
+          <div class="sentence-card simple-box">
+            <h3>Simple Sentence</h3>
+            <p><b>1 Independent Clause</b></p>
+            <p class="example">Children played.</p>
+          </div>
+
+          <div class="sentence-card compound-box">
+            <h3>Compound Sentence</h3>
+            <p><b>2 Independent Clauses</b></p>
+            <p class="example">Children played, and their parents chatted.</p>
+          </div>
+
+          <div class="sentence-card complex-box">
+            <h3>Complex Sentence</h3>
+            <p><b>1 Independent Clause + 1 or More Dependent Clauses</b></p>
+            <p class="example">Children played after the rain stopped.</p>
+          </div>
+
+          <div class="sentence-card compoundcomplex-box">
+            <h3>Compound-Complex Sentence</h3>
+            <p><b>2 or More Independent Clauses + 1 or More Dependent Clauses</b></p>
+            <p class="example">After the rain stopped, the children played, and their parents chatted.</p>
+          </div>
+
+        </div>
+      </div>
+    `;
+  }
+}

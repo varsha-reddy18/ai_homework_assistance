@@ -84,15 +84,14 @@
     <div class="card">
       <h3>📚 Subjects</h3>
       <div class="subjects">
-        <div>Telugu</div>
-        <div>Hindi</div>
-        <div>English</div>
-        <div>Math</div>
-        <div>Physics</div>
-        <div>Chemistry</div>
-        <div>Biology</div>
-        <div>Social</div>
-        <div>Computer</div>
+        <div class="subject" onclick="openSubject('Maths')">Math</div>
+<div class="subject" onclick="openSubject('Physics')">Physics</div>
+<div class="subject" onclick="openSubject('Chemistry')">Chemistry</div>
+<div class="subject" onclick="openSubject('Biology')">Biology</div>
+<div class="subject" onclick="openSubject('Telugu')">తెలుగు</div>
+<div class="subject" onclick="openSubject('Hindi')">हिन्दी</div>
+<div class="subject" onclick="openSubject('Social')">Social</div>
+<div class="subject" onclick="openSubject('Computer')">Computer</div>
 
       </div>
     </div>
@@ -254,6 +253,7 @@
 
 
 <!-- ================= GRAMMAR ================= -->
+<!-- ================= GRAMMAR ================= -->
 <div id="grammar" class="section">
 
   <h2 class="section-title">✏️ Grammar Learning</h2>
@@ -261,58 +261,63 @@
   <!-- CARDS -->
   <div class="grammar-grid">
 
-    <div class="grammar-card">
+    <div class="grammar-card" onclick="openGrammarTopic('tenses')">
       <h3>📘 Tenses</h3>
       <p>Understand Present, Past, and Future tenses to describe actions clearly.</p>
     </div>
 
-    <div class="grammar-card">
+    <div class="grammar-card" onclick="openGrammarTopic('parts')">
       <h3>🧩 Parts of Speech</h3>
       <p>Noun, Verb, Adjective, Adverb, Pronoun, Preposition explained simply.</p>
     </div>
 
-    <div class="grammar-card">
+    <div class="grammar-card" onclick="openGrammarTopic('voice')">
       <h3>🔄 Active & Passive</h3>
       <p>Learn how sentences change from active voice to passive voice.</p>
     </div>
 
-    <div class="grammar-card">
+    <div class="grammar-card" onclick="openGrammarTopic('vocabulary')">
       <h3>📚 Vocabulary</h3>
       <p>Improve synonyms, antonyms, and word meanings.</p>
     </div>
 
-    <div class="grammar-card">
+    <div class="grammar-card" onclick="openGrammarTopic('punctuation')">
       <h3>✍️ Punctuation</h3>
       <p>Master commas, full stops, question marks, and more.</p>
     </div>
 
-    <div class="grammar-card">
+    <div class="grammar-card" onclick="openGrammarTopic('sentence')">
       <h3>📝 Sentence Structure</h3>
       <p>Build correct sentences using Subject + Verb + Object.</p>
     </div>
 
   </div>
 
+  <!-- CLICKED TOPIC CONTENT -->
+  <div id="grammarTopicDisplay" class="grammar-topic-display">
+    <div class="grammar-placeholder">
+      <h3>📚 Select a Grammar Topic</h3>
+      <p>Click any grammar card above to learn with colorful notes and examples.</p>
+    </div>
+  </div>
+
   <!-- CHECKER -->
   <div class="grammar-check-box">
 
-  <h3 class="grammar-heading">🔍 Check Your Grammar</h3>
+    <h3 class="grammar-heading">🔍 Check Your Grammar</h3>
 
-  <div class="editor-container">
+    <div class="editor-container">
+      <textarea id="grammarInput" placeholder="Start writing here to check grammar..."></textarea>
 
-    <textarea id="grammarInput" placeholder="Start writing here to check grammar..."></textarea>
+      <button onclick="checkGrammar()" class="check-btn">
+        ✨ Check Grammar
+      </button>
+    </div>
 
-    <button onclick="checkGrammar()" class="check-btn">
-      ✨ Check Grammar
-    </button>
+    <div id="grammarResult" class="grammar-result"></div>
 
   </div>
-
-  <div id="grammarResult" class="grammar-result"></div>
-
-</div>
-</div>
-
+</div>  
 <!-- ================= PUZZLE ================= -->
 <div id="puzzle" class="section">
 

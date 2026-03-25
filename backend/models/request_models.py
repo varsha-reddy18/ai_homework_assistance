@@ -2,12 +2,13 @@ from pydantic import BaseModel
 from typing import Optional, List
 
 # -----------------------
-# USER QUESTION (CHAT)
-# -----------------------
+# USER QUESTION (CHAT
+
 class Question(BaseModel):
     question: str
-    session_id: Optional[str] = "default"   # for chat memory
-    user_id: Optional[str] = None           # for database tracking
+    user_id: str | None = None
+    session_id: str | None = None
+    subject: str | None = None   # ✅ ADD THIS        
 
 
 class StudyPlanRequest(BaseModel):

@@ -19,6 +19,6 @@ scikit-learn
 python-dotenv
 
 supabase
-
+beautifulsoup4
 requests
 pydantic[email]

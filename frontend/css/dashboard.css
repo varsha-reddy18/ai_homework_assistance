@@ -381,6 +381,116 @@ body{
     width:90%;
   }
 }
+
+
+.subject-banner{
+  background:#3b82f6;
+  color:white;
+  padding:10px;
+  border-radius:10px;
+  margin-bottom:10px;
+  text-align:center;
+  font-weight:600;
+}
+
+/* CHAT AREA */
+.chat-area{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:20px;
+  height:100%;
+  overflow-y:auto;
+}
+
+/* USER MESSAGE */
+.user-msg{
+  align-self:flex-end;
+  background:#3b82f6;
+  color:white;
+  padding:10px 15px;
+  border-radius:15px 15px 0 15px;
+  max-width:70%;
+  font-size:14px;
+}
+
+/* AI MESSAGE */
+.ai-msg{
+  align-self:flex-start;
+  background:#f1f5f9;
+  color:#111;
+  padding:12px 15px;
+  border-radius:15px 15px 15px 0;
+  max-width:70%;
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* SUBJECT TAG */
+.subject-tag{
+  font-size:11px;
+  color:#666;
+  margin-bottom:2px;
+}
+/* CHAT */
+.chat-area{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  padding:15px;
+}
+/* USER CHAT BUBBLE */
+.user-msg{
+  align-self:flex-end;
+  background:#2563eb;
+  color:white;
+  padding:12px 14px;
+  border-radius:18px 18px 4px 18px;
+  max-width:72%;
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  box-shadow:0 8px 20px rgba(37,99,235,0.18);
+}
+
+/* SUBJECT CHIP */
+.subject-chip{
+  align-self:flex-start;
+  background:rgba(255,255,255,0.18);
+  padding:4px 10px;
+  border-radius:999px;
+  font-size:11px;
+  font-weight:600;
+  letter-spacing:0.3px;
+}
+
+/* QUESTION TEXT */
+.msg-text{
+  font-size:14px;
+  line-height:1.5;
+}
+
+/* AI MESSAGE */
+.ai-msg{
+  align-self:flex-start;
+  background:#ffffff;
+  color:#0f172a;
+  padding:14px 16px;
+  border-radius:18px 18px 18px 4px;
+  max-width:78%;
+  line-height:1.7;
+  box-shadow:0 10px 28px rgba(15,23,42,0.08);
+  white-space:pre-wrap;
+}
+
+
+
+/* SUBJECT TAG */
+.subject-tag{
+  font-size:11px;
+  opacity:0.8;
+}
+
 .section{
   display:none;
 }
@@ -1496,4 +1606,246 @@ body.dark-mode .geo-item{
 }
 body{
   transition:0.3s;
+}
+
+/* ================= GRAMMAR CARDS ================= */
+.grammar-card {
+  cursor: pointer;
+  transition: 0.3s ease;
+}
+
+.grammar-card:hover {
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.12);
+}
+
+/* ================= GRAMMAR DISPLAY AREA ================= */
+.grammar-topic-display {
+  margin-top: 30px;
+  padding: 25px;
+  border-radius: 24px;
+  background: linear-gradient(135deg, #f8fbff, #eef6ff);
+  box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+}
+
+.grammar-placeholder {
+  text-align: center;
+  padding: 40px 20px;
+  color: #444;
+}
+
+.topic-main-title {
+  text-align: center;
+  font-size: 32px;
+  margin-bottom: 30px;
+  color: #222;
+  font-weight: 700;
+}
+
+/* ================= TENSES ================= */
+.tense-wrapper {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.tense-column {
+  border-radius: 20px;
+  padding: 20px;
+}
+
+.tense-column h3 {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 26px;
+}
+
+.present {
+  background: #f2e6f8;
+}
+
+.past {
+  background: #f4f0b7;
+}
+
+.future {
+  background: #f8e4d2;
+}
+
+.tense-card-box {
+  background: white;
+  border-radius: 18px;
+  padding: 18px;
+  margin-bottom: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.tense-card-box h4 {
+  margin-bottom: 10px;
+  font-size: 20px;
+}
+
+/* ================= PARTS OF SPEECH ================= */
+.parts-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.part-card {
+  padding: 20px;
+  border-radius: 20px;
+  color: #222;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  background: white;
+}
+
+.part-card h3 {
+  margin-bottom: 12px;
+  font-size: 24px;
+}
+
+.noun { border-left: 8px solid #ff7a59; }
+.pronoun { border-left: 8px solid #4f8ef7; }
+.verb { border-left: 8px solid #c23c8b; }
+.adjective { border-left: 8px solid #55b949; }
+.adverb { border-left: 8px solid #9d6dfd; }
+.preposition { border-left: 8px solid #f39c12; }
+.conjunction { border-left: 8px solid #8e44ad; }
+.interjection { border-left: 8px solid #b9770e; }
+
+/* ================= ACTIVE PASSIVE ================= */
+.voice-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.voice-card {
+  padding: 25px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.active-box {
+  border-top: 10px solid #16a085;
+}
+
+.passive-box {
+  border-top: 10px solid #27ae60;
+}
+
+.voice-card h3 {
+  font-size: 28px;
+  margin-bottom: 15px;
+}
+
+.formula {
+  background: #f3f7ff;
+  padding: 12px 16px;
+  border-radius: 14px;
+  font-weight: bold;
+  margin: 15px 0;
+}
+
+/* ================= VOCABULARY ================= */
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+.vocab-card {
+  padding: 20px;
+  border-radius: 22px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+}
+
+.vocab-card h3 {
+  text-align: center;
+  margin-bottom: 15px;
+  font-size: 24px;
+}
+
+.beginner {
+  border-top: 10px solid #e74c3c;
+}
+
+.intermediate {
+  border-top: 10px solid #3498db;
+}
+
+.advanced {
+  border-top: 10px solid #8e44ad;
+}
+
+.vocab-card ul {
+  padding-left: 20px;
+  line-height: 1.9;
+}
+
+/* ================= PUNCTUATION ================= */
+.punctuation-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.punc-card {
+  background: #fff8f0;
+  border-left: 8px solid #ff6b35;
+  border-radius: 18px;
+  padding: 18px;
+  box-shadow: 0 8px 18px rgba(0,0,0,0.08);
+}
+
+.punc-card h3 {
+  color: #d62828;
+  margin-bottom: 10px;
+}
+
+/* ================= SENTENCE STRUCTURE ================= */
+.sentence-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 25px;
+}
+
+.sentence-card {
+  padding: 25px;
+  border-radius: 24px;
+  background: white;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  text-align: center;
+}
+
+.sentence-card h3 {
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.example {
+  margin-top: 20px;
+  font-size: 24px;
+  font-weight: 600;
+  color: #4b4bb7;
+}
+
+.simple-box { border-top: 10px solid #95a5a6; }
+.compound-box { border-top: 10px solid #7f8c8d; }
+.complex-box { border-top: 10px solid #c2185b; }
+.compoundcomplex-box { border-top: 10px solid #8e44ad; }
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 900px) {
+  .tense-wrapper,
+  .voice-grid,
+  .vocab-grid,
+  .sentence-grid,
+  .parts-grid,
+  .punctuation-grid {
+    grid-template-columns: 1fr;
+  }
 }
