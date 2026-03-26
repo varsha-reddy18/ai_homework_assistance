@@ -1665,189 +1665,168 @@ body{
 
 /*-----General knowledge-------*/
 
+/* ================= GENERAL KNOWLEDGE ================= */
 
-
-/* CONTAINER */
-.geo-container{
-  max-width:1000px;
-  margin:40px auto;
-  text-align:center;
-}
-
-/* TITLE */
-.geo-title{
-  font-size:28px;
-  margin-bottom:25px;
-  color:#3b82f6;
-}
-
-/* BUTTONS */
-.geo-buttons{
-  display:flex;
-  flex-wrap:wrap;
-  justify-content:center;
-  gap:10px;
-  margin-bottom:25px;
-}
-
-.geo-buttons button{
-  background:linear-gradient(135deg,#3b82f6,#6366f1);
-  color:white;
-  border:none;
-  padding:10px 15px;
-  border-radius:10px;
-  cursor:pointer;
-  font-size:14px;
-  transition:0.3s;
-}
-
-.geo-buttons button:hover{
-  transform:scale(1.05);
-}
-
-/* RESULT GRID */
-.geo-result{
-  display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
-  gap:15px;
-}
-
-/* CARD */
-.geo-item{
-  background:white;
-  padding:15px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,0.05);
-  transition:0.3s;
-}
-
-/* HOVER */
-.geo-item:hover{
-  transform:translateY(-5px);
-  box-shadow:0 10px 25px rgba(59,130,246,0.2);
-}
-
-/* TITLE */
-.geo-item h4{
-  margin-bottom:5px;
-  color:#111;
-}
-
-/* CAPITAL */
-.geo-item p{
-  font-size:13px;
-  color:#555;
-}
-/* SUB TITLES */
-.sub-title{
-  font-size:20px;
-  margin:25px 0 10px;
-  color:#1e3a8a;
-  text-align:left;
-}
-
-/* BLOCK SPACING */
-.geo-block{
-  margin-bottom:15px;
-}
 /* MAIN CONTAINER */
 .geo-container{
-  max-width:1100px;
-  margin:40px auto;
-  padding:20px;
+  width:100%;
+  max-width:1150px;
+  margin:20px auto;
+  padding:25px;
 }
 
 /* MAIN TITLE */
 .geo-title{
   text-align:center;
-  font-size:32px;
-  font-weight:700;
-  color:#3b82f6;
+  font-size:34px;
+  font-weight:800;
   margin-bottom:30px;
+  color:#1e3a8a;
+  letter-spacing:0.5px;
 }
 
-/* SECTION BLOCK (CARD STYLE) */
+/* SECTION BLOCK */
 .geo-block{
-  background:white;
-  padding:20px 25px;
-  border-radius:18px;
-  margin-bottom:25px;
-  box-shadow:0 8px 25px rgba(0,0,0,0.05);
+  background:linear-gradient(135deg,#ffffff,#f8fbff);
+  padding:28px;
+  border-radius:28px;
+  margin-bottom:28px;
+  box-shadow:0 15px 35px rgba(0,0,0,0.07);
+  border:1px solid rgba(59,130,246,0.08);
+  transition:0.3s ease;
+}
+
+.geo-block:hover{
+  transform:translateY(-4px);
+  box-shadow:0 20px 40px rgba(59,130,246,0.12);
 }
 
 /* SUB TITLES */
 .sub-title{
-  font-size:22px;
-  font-weight:600;
-  color:#1e3a8a;
-  margin-bottom:15px;
+  font-size:24px;
+  font-weight:700;
+  color:#1d4ed8;
+  margin-bottom:18px;
   display:flex;
   align-items:center;
-  gap:8px;
+  gap:10px;
 }
 
 /* BUTTON GROUP */
 .geo-buttons{
   display:flex;
   flex-wrap:wrap;
-  gap:12px;
+  gap:14px;
+  justify-content:flex-start;
 }
 
 /* BUTTON STYLE */
 .geo-buttons button{
+  border:none;
   background:linear-gradient(135deg,#3b82f6,#6366f1);
   color:white;
-  border:none;
-  padding:10px 18px;
-  border-radius:12px;
+  padding:12px 18px;
+  border-radius:14px;
   font-size:14px;
-  font-weight:500;
+  font-weight:600;
   cursor:pointer;
-  transition:0.3s;
-  box-shadow:0 4px 10px rgba(59,130,246,0.2);
+  transition:all 0.25s ease;
+  box-shadow:0 8px 18px rgba(59,130,246,0.22);
 }
 
-/* HOVER EFFECT */
+/* BUTTON HOVER */
 .geo-buttons button:hover{
-  transform:translateY(-3px);
-  box-shadow:0 8px 20px rgba(59,130,246,0.3);
+  transform:translateY(-3px) scale(1.03);
+  box-shadow:0 12px 24px rgba(59,130,246,0.3);
 }
 
 /* RESULT GRID */
 .geo-result{
-  margin-top:25px;
+  margin-top:30px;
   display:grid;
-  grid-template-columns:repeat(auto-fit,minmax(200px,1fr));
-  gap:18px;
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+  gap:20px;
 }
 
-/* CARD STYLE */
+/* RESULT CARD */
 .geo-item{
-  background:#f8fafc;
-  padding:18px;
-  border-radius:14px;
+  background:linear-gradient(135deg,#ffffff,#f9fbff);
+  padding:22px 18px;
+  border-radius:22px;
   text-align:center;
-  transition:0.3s;
-  border:1px solid #e2e8f0;
+  border:1px solid #e5edff;
+  box-shadow:0 10px 22px rgba(0,0,0,0.05);
+  transition:0.3s ease;
+  position:relative;
+  overflow:hidden;
 }
 
-/* CARD HOVER */
+/* TOP COLOR BAR */
+.geo-item::before{
+  content:"";
+  position:absolute;
+  top:0;
+  left:0;
+  width:100%;
+  height:6px;
+  background:linear-gradient(135deg,#3b82f6,#6366f1);
+}
+
+/* HOVER */
 .geo-item:hover{
-  transform:translateY(-5px);
-  box-shadow:0 10px 25px rgba(0,0,0,0.08);
+  transform:translateY(-6px);
+  box-shadow:0 18px 30px rgba(59,130,246,0.15);
 }
 
-/* CARD TITLE */
+/* TITLE */
 .geo-item h4{
-  font-size:16px;
-  margin-bottom:6px;
-  color:#111;
+  font-size:18px;
+  font-weight:700;
+  margin-bottom:8px;
+  color:#0f172a;
 }
 
-/* CARD TEXT */
+/* DESCRIPTION / CAPITAL */
 .geo-item p{
-  font-size:13px;
-  color:#555;
+  font-size:14px;
+  color:#475569;
+  line-height:1.6;
+}
+
+/* EMPTY RESULT LOOK */
+.geo-result:empty::before{
+  content:"📚 Select a category to explore knowledge cards";
+  display:block;
+  text-align:center;
+  padding:30px;
+  font-size:16px;
+  color:#64748b;
+  background:#f8fbff;
+  border-radius:18px;
+  border:1px dashed #cbd5e1;
+}
+
+/* RESPONSIVE */
+@media(max-width:768px){
+  .geo-title{
+    font-size:28px;
+  }
+
+  .sub-title{
+    font-size:20px;
+  }
+
+  .geo-buttons{
+    justify-content:center;
+  }
+
+  .geo-buttons button{
+    width:100%;
+  }
+
+  .geo-result{
+    grid-template-columns:1fr;
+  }
 }
 
 
@@ -2229,3 +2208,6 @@ body{
   height: 45px !important;
   font-size: 20px !important;
 }
+
+
+

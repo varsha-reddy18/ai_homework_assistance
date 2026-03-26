@@ -151,18 +151,24 @@ function loadChat(chatId){
 }
 
 /* ASK AI */
-async function askAI(){
+async function askAI() {
+  const questionInput = document.getElementById("question");
+  const fileInput = document.getElementById("imageInput");
+  const question = questionInput.value.trim();
 
-  let questionInput = document.getElementById("question");
-  let question = questionInput.value.trim();
-
-  if(!question) return;
-
-  if(!selectedSubject){
+  if (!question) return;
+  if (!selectedSubject) {
     alert("Please select a subject first!");
     return;
   }
 
+  // ✅ If a file is attached, route to uploadImage instead
+  if (fileInput.files.length > 0) {
+    await uploadImage();
+    return;
+  }
+
+  // ... rest of your existing askAI code unchanged
   const chatArea = document.getElementById("chatArea");
 
   // show user message only once
@@ -179,201 +185,431 @@ async function askAI(){
   chatArea.appendChild(loading);
 
   chatArea.scrollTop = chatArea.scrollHeight;
-
-  try{
-
-    const res = await fetch("http://127.0.0.1:8000/ask",{
-      method:"POST",
-      headers:{
-        "Content-Type":"application/json"
-      },
-      body: JSON.stringify({
-        question: question,
-        subject: selectedSubject,
-        session_id: currentChatId,
-        user_id: localStorage.getItem("user_id") || null
-      })
-    });
-
-    const data = await res.json();
-
-    loading.remove();
-
-    let answer = data.answer || "⚠ No answer found";
-
-    // format answer
-    answer = answer
-      .replace(/\n/g, "<br>")
-      .replace(/📘/g, "📘 ")
-      .replace(/✅/g, "<br><br>✅ ");
-
-    chatArea.innerHTML += `
-      <div class="ai-msg">${answer}</div>
-    `;
-
-    // save subject-wise
-    let key = selectedSubject + "_" + currentChatId;
-    let chatData = JSON.parse(localStorage.getItem(key)) || [];
-
-    chatData.push({
-      q: question,
-      a: answer
-    });
-
-    localStorage.setItem(key, JSON.stringify(chatData));
-
-    renderChatList();
-
-  }catch(error){
-    loading.remove();
-    chatArea.innerHTML += `
-      <div class="ai-msg">⚠ Error</div>
-    `;
-  }
-
-  questionInput.value = "";
-  chatArea.scrollTop = chatArea.scrollHeight;
-}
-/* ================= VOICE INPUT ================= */
-let recognition
-let isListening = false
-
-function startVoice(){
-
-recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)()
-recognition.lang = "en-US"
-recognition.continuous = true   // 🔥 continuous listening
-recognition.interimResults = false
-
-isListening = true
-
-recognition.start()
-
-recognition.onresult = function(e){
-
-const transcript = e.results[e.results.length - 1][0].transcript
-
-document.getElementById("question").value = transcript
-
-askAI()
-}
-
-recognition.onerror = function(){
-stopVoice()
-}
-
-recognition.onend = function(){
-if(isListening){
-recognition.start()  // 🔥 keep listening
-}
-}
-}
-/* ================= IMAGE UPLOAD (OCR + AI) ================= */
-async function uploadImage(){
-
-const fileInput = document.getElementById("imageInput")
-const chat = document.getElementById("chatArea")
-const questionInput = document.getElementById("question")
-
-const file = fileInput.files[0]
-if(!file) return
-
-chat.innerHTML += `<div class="user-msg">📷 Image uploaded</div>`
-
-const loadingDiv = document.createElement("div")
-loadingDiv.className = "ai-msg"
-loadingDiv.innerText = "🤖 Processing image..."
-chat.appendChild(loadingDiv)
+let plainAnswer = "";
 
 try{
 
-const formData = new FormData()
-formData.append("file", file)
-formData.append("question", questionInput.value || "explain")
+  const res = await fetch("http://127.0.0.1:8000/ask",{
+    method:"POST",
+    headers:{
+      "Content-Type":"application/json"
+    },
+    body: JSON.stringify({
+      question: question,
+      subject: selectedSubject,
+      session_id: currentChatId,
+      user_id: localStorage.getItem("user_id") || null
+    })
+  });
 
-const res = await fetch("http://127.0.0.1:8000/ask-from-image",{
-method:"POST",
-body: formData
-})
+  const data = await res.json();
 
-const data = await res.json()
+  loading.remove();
 
-loadingDiv.remove()
+  let answer = data.answer || "⚠ No answer found";
 
-if(data.extracted_text){
-chat.innerHTML += `<div class="ai-msg">📄 ${data.extracted_text}</div>`
+  answer = answer
+    .replace(/\n/g, "<br>")
+    .replace(/📘/g, "📘 ")
+    .replace(/✅/g, "<br><br>✅ ");
+
+  chatArea.innerHTML += `
+    <div class="ai-msg">${answer}</div>
+  `;
+
+  // ✅ FIXED
+  plainAnswer = answer.replace(/<br>/g, " ").replace(/<[^>]*>/g, "");
+
+  speakText(plainAnswer);
+
+  let key = selectedSubject + "_" + currentChatId;
+  let chatData = JSON.parse(localStorage.getItem(key)) || [];
+
+  chatData.push({
+    q: question,
+    a: answer
+  });
+
+  localStorage.setItem(key, JSON.stringify(chatData));
+
+  renderChatList();
+
+}catch(error){
+  loading.remove();
+  chatArea.innerHTML += `
+    <div class="ai-msg">⚠ Error</div>
+  `;
 }
 
-chat.innerHTML += `<div class="ai-msg">🤖 ${data.answer}</div>`
+questionInput.value = "";
+chatArea.scrollTop = chatArea.scrollHeight;
+}
+/* ================= VOICE INPUT ================= */
+/* ================= FINAL VOICE SYSTEM ================= */
 
-}catch{
-loadingDiv.remove()
-chat.innerHTML += `<div class="ai-msg">⚠ Error</div>`
+let recognition = null;
+let isListening = false;
+let currentSpeech = null;
+let voiceEnabled = true;
+
+/* START VOICE INPUT */
+function startVoice() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+  if (!SpeechRecognition) {
+    alert("⚠️ Voice input not supported. Use Google Chrome.");
+    return;
+  }
+
+  // stop old instance
+  if (recognition) {
+    recognition.stop();
+  }
+
+  recognition = new SpeechRecognition();
+
+  recognition.lang = "en-US";  // you can change later
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  isListening = true;
+
+  recognition.onstart = () => {
+    console.log("🎤 Listening...");
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById("question").value = transcript;
+
+    console.log("✅ Recognized:", transcript);
+
+    isListening = false;
+  };
+
+  recognition.onerror = (event) => {
+    console.error("❌ Voice error:", event.error);
+
+    if (event.error === "not-allowed") {
+      alert("⚠️ Microphone permission denied. Allow mic access.");
+    } else if (event.error === "no-speech") {
+      alert("⚠️ No speech detected.");
+    } else {
+      alert("⚠️ Voice error: " + event.error);
+    }
+
+    isListening = false;
+  };
+
+  recognition.onend = () => {
+    console.log("🎤 Stopped listening");
+    isListening = false;
+  };
+
+  recognition.start();
 }
 
-chat.scrollTop = chat.scrollHeight
-fileInput.value = ""
-}async function loadChatHistory(){
+/* STOP VOICE */
+function stopVoice() {
+  if (recognition) {
+    recognition.stop();
+  }
 
-const user_id = localStorage.getItem("user_id")
-if(!user_id) return
+  window.speechSynthesis.cancel();
 
-const res = await fetch(`http://127.0.0.1:8000/chat-history/${user_id}`)
-const data = await res.json()
+  isListening = false;
 
-const chat = document.getElementById("chatArea")
-chat.innerHTML = ""
-
-data.forEach(msg=>{
-
-// USER MESSAGE (RIGHT)
-chat.innerHTML += `
-<div class="chat-row user">
-  <div class="chat-bubble user-bubble">
-    ${msg.question}
-  </div>
-</div>
-`
-
-// AI MESSAGE (LEFT)
-chat.innerHTML += `
-<div class="chat-row ai">
-  <div class="chat-bubble ai-bubble">
-    ${msg.answer}
-  </div>
-</div>
-`
-
-})
-
-chat.scrollTop = chat.scrollHeight
+  console.log("🛑 Voice stopped");
 }
-let voiceEnabled = true   // 🔥 toggle
-let currentSpeech = null
+/* ================= IMPROVED SPEAK SYSTEM ================= */
 
-function speakText(text){
+let availableVoices = [];
 
-if(!voiceEnabled) return
-
-// Stop previous speech
-if(currentSpeech){
-window.speechSynthesis.cancel()
+/* Load available voices */
+function loadVoices() {
+  availableVoices = window.speechSynthesis.getVoices();
+  console.log("🔊 Loaded voices:", availableVoices);
 }
 
-const speech = new SpeechSynthesisUtterance(text)
-speech.lang = "en-US"
-speech.rate = 1
-speech.pitch = 1
+/* Some browsers load voices late */
+window.speechSynthesis.onvoiceschanged = loadVoices;
+loadVoices();
 
-currentSpeech = speech
+/* SPEAK TEXT */
+function speakText(text) {
+  if (!voiceEnabled) return;
 
-window.speechSynthesis.speak(speech)
+  if (!text || text.trim() === "") {
+    alert("⚠️ No text to speak.");
+    return;
+  }
+
+  // Stop any previous speech
+  window.speechSynthesis.cancel();
+
+  const speech = new SpeechSynthesisUtterance(text);
+
+  // Detect language
+  let targetLang = "en-US";
+  if (/[\u0C00-\u0C7F]/.test(text)) {
+    targetLang = "te-IN";   // Telugu
+  } else if (/[\u0900-\u097F]/.test(text)) {
+    targetLang = "hi-IN";   // Hindi
+  }
+
+  speech.lang = targetLang;
+  speech.rate = 1;
+  speech.pitch = 1;
+  speech.volume = 1;
+
+  // Try to select best matching voice
+  const matchedVoice =
+    availableVoices.find(v => v.lang === targetLang) ||
+    availableVoices.find(v => v.lang.startsWith(targetLang.split("-")[0])) ||
+    availableVoices.find(v => v.lang.startsWith("en"));
+
+  if (matchedVoice) {
+    speech.voice = matchedVoice;
+    console.log("✅ Using voice:", matchedVoice.name, matchedVoice.lang);
+  } else {
+    console.log("⚠️ No exact voice found, using default browser voice.");
+  }
+
+  speech.onstart = () => {
+    console.log("🔊 Speaking started...");
+  };
+
+  speech.onend = () => {
+    console.log("✅ Speaking finished.");
+  };
+
+  speech.onerror = (e) => {
+    console.error("❌ Speech error:", e.error);
+    alert("⚠️ Speech output failed.");
+  };
+
+  currentSpeech = speech;
+  window.speechSynthesis.speak(speech);
+}
+function speakInput() {
+  const inputText = document.getElementById("question").value.trim();
+
+  if (!inputText) {
+    alert("⚠️ Please type something first.");
+    return;
+  }
+
+  speakText(inputText);
+}
+/* ================= IMAGE UPLOAD (OCR + AI) ================= */
+
+// ✅ Show badge when file is selected (do NOT auto-send)
+document.getElementById("imageInput").addEventListener("change", function () {
+  const file = this.files[0];
+  if (!file) return;
+
+  let badge = document.getElementById("fileBadge");
+  if (!badge) {
+    badge = document.createElement("span");
+    badge.id = "fileBadge";
+    badge.style.cssText = `
+      background: #4CAF50; color: white; padding: 3px 10px;
+      border-radius: 12px; font-size: 12px; margin-right: 6px;
+      display: inline-flex; align-items: center; gap: 5px;
+    `;
+    const inputArea = document.querySelector(".chat-input-area");
+    // Insert badge before the text input
+    const questionInput = document.getElementById("question");
+    inputArea.insertBefore(badge, questionInput);
+  }
+
+  badge.innerHTML = `📎 ${file.name} <span onclick="clearFile()" style="cursor:pointer; font-weight:bold; margin-left:4px;">✕</span>`;
+
+  // ✅ Remind user to type a question
+  const questionInput = document.getElementById("question");
+  if (!questionInput.value.trim()) {
+    questionInput.placeholder = "Type your question about this file, then press ➤";
+    questionInput.focus();
+  }
+});
+
+// ✅ Clear selected file and badge
+function clearFile() {
+  document.getElementById("imageInput").value = "";
+  const badge = document.getElementById("fileBadge");
+  if (badge) badge.remove();
+  document.getElementById("question").placeholder = "Ask anything...";
 }
 
-/* ================= REST OF YOUR CODE (UNCHANGED) ================= */
+// ✅ Main upload + ask function
+async function uploadImage() {
+  const fileInput     = document.getElementById("imageInput");
+  const chat          = document.getElementById("chatArea");
+  const questionInput = document.getElementById("question");
 
-/* planner, quiz, puzzle, grammar etc remain same */
-/* ================= PLANNER ================= */
+  const file     = fileInput.files[0];
+  const question = questionInput.value.trim();
+
+  // ✅ No file check
+  if (!file) {
+    alert("⚠️ Please select an image or PDF first.");
+    return;
+  }
+
+  // ✅ No question check — don't allow empty question
+  if (!question) {
+    questionInput.placeholder = "⚠️ Please type your question first, then press ➤";
+    questionInput.focus();
+    return;
+  }
+
+  // ✅ File type validation
+  const allowedTypes = [
+    "image/jpeg", "image/jpg", "image/png",
+    "image/bmp", "image/webp", "application/pdf"
+  ];
+  if (!allowedTypes.includes(file.type)) {
+    alert("⚠️ Only JPG, PNG, BMP, WEBP, or PDF files are supported.");
+    clearFile();
+    return;
+  }
+
+  // ✅ File size check (max 10MB)
+  if (file.size > 10 * 1024 * 1024) {
+    alert("⚠️ File too large. Maximum allowed size is 10MB.");
+    clearFile();
+    return;
+  }
+
+  // ✅ Subject check
+  if (!selectedSubject) {
+    alert("⚠️ Please select a subject before uploading.");
+    return;
+  }
+
+  // ✅ Show user message in chat
+  chat.innerHTML += `
+    <div class="user-msg">
+      <div class="msg-text">
+        📎 <b>${file.name}</b><br>
+        <small style="opacity:0.85;">❓ ${question}</small>
+      </div>
+    </div>
+  `;
+
+  // ✅ Loading indicator
+  const loadingDiv = document.createElement("div");
+  loadingDiv.className = "ai-msg";
+  loadingDiv.innerHTML = "🤖 Reading your file and thinking...";
+  chat.appendChild(loadingDiv);
+  chat.scrollTop = chat.scrollHeight;
+
+  try {
+    // ✅ Build FormData with actual question
+    const formData = new FormData();
+    formData.append("file", file);
+    formData.append("question", question);   // ← real question, not "explain"
+
+    // ✅ Send to backend
+    const res = await fetch("http://127.0.0.1:8000/ask-from-image", {
+      method: "POST",
+      body: formData
+    });
+
+    // ✅ Handle HTTP errors
+    if (!res.ok) {
+      let errMsg = `Server error: ${res.status}`;
+      try {
+        const errData = await res.json();
+        errMsg = errData.detail || errMsg;
+      } catch (_) {}
+      throw new Error(errMsg);
+    }
+
+    const data = await res.json();
+    loadingDiv.remove();
+
+    // ✅ Show extracted text preview (collapsed style)
+    if (data.extracted_text && data.extracted_text.trim() !== "") {
+      const preview = data.extracted_text.length > 250
+        ? data.extracted_text.slice(0, 250) + "..."
+        : data.extracted_text;
+
+      chat.innerHTML += `
+        <div class="ai-msg" style="
+          font-size: 0.82em;
+          opacity: 0.7;
+          border-left: 3px solid #aaa;
+          padding-left: 8px;
+          margin-bottom: 4px;
+        ">
+          📄 <b>Extracted Text:</b><br>${preview}
+        </div>
+      `;
+    } else {
+      chat.innerHTML += `
+        <div class="ai-msg" style="opacity:0.75; font-size:0.85em; color: orange;">
+          ⚠️ Could not extract text clearly. Answer may be limited.
+        </div>
+      `;
+    }
+
+    // ✅ Format AI answer properly
+    let answer = data.answer || "⚠️ No answer received from AI.";
+    answer = answer
+      .replace(/\n\n/g, "<br><br>")
+      .replace(/\n/g, "<br>")
+      .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")   // bold **text**
+      .replace(/✅/g, "<br>✅ ")
+      .replace(/📘/g, "📘 ");
+
+    // ✅ Show answer
+    chat.innerHTML += `
+      <div class="ai-msg">🤖 ${answer}</div>
+    `;
+
+    // ✅ Speak the answer
+    const plainAnswer = answer
+      .replace(/<br>/g, " ")
+      .replace(/<[^>]*>/g, "")
+      .trim();
+    speakText(plainAnswer);
+
+    // ✅ Save to chat history
+    if (currentChatId && selectedSubject) {
+      const key      = selectedSubject + "_" + currentChatId;
+      const chatData = JSON.parse(localStorage.getItem(key)) || [];
+      chatData.push({
+        q: `📎 [${file.name}] ${question}`,
+        a: answer
+      });
+      localStorage.setItem(key, JSON.stringify(chatData));
+      renderChatList();
+    }
+
+  } catch (error) {
+    loadingDiv.remove();
+
+    let userMsg = error.message;
+    if (error.message.includes("Failed to fetch")) {
+      userMsg = "Cannot connect to server. Make sure your backend is running on port 8000.";
+    }
+
+    chat.innerHTML += `
+      <div class="ai-msg" style="color:#e74c3c;">
+        ⚠️ Error: ${userMsg}
+      </div>
+    `;
+    console.error("uploadImage error:", error);
+  }
+
+  // ✅ Always cleanup
+  questionInput.value = "";
+  questionInput.placeholder = "Ask anything...";
+  clearFile();
+  chat.scrollTop = chat.scrollHeight;
+}
 /* ================= SMART STUDY PLANNER ================= */
 
 function generateStudyPlanner() {
@@ -568,17 +804,6 @@ function toggleComplete(element){
     element.style.textDecoration === "line-through"
     ? "none"
     : "line-through";
-}
-
-function stopVoice(){
-
-isListening = false
-
-if(recognition){
-recognition.stop()
-}
-
-window.speechSynthesis.cancel()
 }
 
 /* ================= QUIZ (50 QUESTIONS) ================= */

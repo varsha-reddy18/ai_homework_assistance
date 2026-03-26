@@ -11,13 +11,6 @@ class Question(BaseModel):
     subject: str | None = None   # ✅ ADD THIS        
 
 
-class StudyPlanRequest(BaseModel):
-    subject: str
-    topics: List[str]
-    duration: int
-# -----------------------
-# CHAT RESPONSE
-# -----------------------
 class AnswerResponse(BaseModel):
     answer: str
     session_id: Optional[str] = None

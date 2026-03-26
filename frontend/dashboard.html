@@ -77,9 +77,9 @@
   <div id="home" class="section active">
 
     <div class="hero">
-      <h2>✨ Learn Smarter with AI</h2>
-      <p>Boost your learning with personalized AI tools and interactive content.</p>
-    </div>
+  <h2>🤖 AI Homework Assistant</h2>
+  <h4>Get instant help with maths, science, Telugu, Hindi, and more — anytime you need it.</h4>
+</div>
 
     <div class="card">
       <h3>📚 Subjects</h3>
@@ -148,10 +148,11 @@
         <!-- VOICE -->
         <button onclick="startVoice()">🎙️</button>
         <button onclick="stopVoice()">⛔</button>
+        <button onclick="speakText(document.getElementById('chatArea').innerText)">🔊</button>
 
-        <!-- IMAGE -->
-        <input type="file" id="imageInput" hidden onchange="uploadImage()">
-        <button onclick="document.getElementById('imageInput').click()">📷</button>
+        <!-- AFTER (correct) -->
+<input type="file" id="imageInput" hidden accept=".jpg,.jpeg,.png,.bmp,.webp,.pdf">
+<button onclick="document.getElementById('imageInput').click()">📷</button>
 
         <!-- SEND -->
         <button onclick="askAI()">➤</button>

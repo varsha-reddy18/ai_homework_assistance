@@ -22,3 +22,7 @@ supabase
 beautifulsoup4
 requests
 pydantic[email]
+googletrans==4.0.0rc1
+deep-translator
+httpx[http2]
+PyMuPDF

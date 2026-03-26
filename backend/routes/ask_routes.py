@@ -13,17 +13,17 @@ class Question(BaseModel):
     session_id: str = "default"
     user_id: str | None = None
 
-
 # -----------------------
 # ASK ROUTE
 # -----------------------
 @router.post("/ask")
 def ask_question(data: Question):
 
+    # Pass the question text directly (no cleaning) to preserve Telugu/Hindi characters
     answer = generate_answer(
-        data.question,
-        data.session_id,
-        data.subject
+        question=data.question.strip(),  # keep original text
+        session_id=data.session_id,
+        subject=data.subject
     )
 
     return {"answer": answer}
