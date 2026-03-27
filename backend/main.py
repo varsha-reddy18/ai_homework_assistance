@@ -1,18 +1,14 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-from routes import ask_routes, image_routes,grammar_routes,auth_routes
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 
 app = FastAPI()
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
+frontend_path = os.path.abspath(os.path.join(os.path.dirname(__file__), "../frontend"))
 
-app.include_router(auth_routes.router)
-app.include_router(ask_routes.router)
-app.include_router(image_routes.router)
-app.include_router(grammar_routes.router)
+app.mount("/static", StaticFiles(directory=frontend_path), name="static")
+
+@app.get("/")
+def home():
+    return FileResponse(os.path.join(frontend_path, "index.html"))
