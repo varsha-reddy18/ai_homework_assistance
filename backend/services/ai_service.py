@@ -11,7 +11,7 @@ from sympy.parsing.sympy_parser import (
 )
 
 # -----------------------------------------------------------------------
-# LOAD AI MODEL  (English-only; used for answer generation, not translation)
+# LOAD AI MODEL
 # -----------------------------------------------------------------------
 device = "cuda" if torch.cuda.is_available() else "cpu"
 MODEL_NAME = "google/flan-t5-base"
@@ -20,9 +20,8 @@ tokenizer = AutoTokenizer.from_pretrained(MODEL_NAME)
 model = AutoModelForSeq2SeqLM.from_pretrained(MODEL_NAME).to(device)
 model.eval()
 
-
 # -----------------------------------------------------------------------
-# TRANSLATION  (pip install deep-translator)
+# TRANSLATION
 # -----------------------------------------------------------------------
 try:
     from deep_translator import GoogleTranslator
@@ -33,13 +32,11 @@ except ImportError:
 
 
 def _google_translate(text: str, dest: str, src: str = "auto") -> str | None:
-    """Translate a single piece of plain text. Returns None on failure."""
     if not TRANSLATE_AVAILABLE or not text or not text.strip():
         return None
     try:
         translated = GoogleTranslator(source=src, target=dest).translate(text.strip())
         result = translated.strip() if translated else None
-        # Reject suspiciously short results (e.g. a lone ".")
         if result and len(result) > 1:
             return result
         return None
@@ -49,16 +46,16 @@ def _google_translate(text: str, dest: str, src: str = "auto") -> str | None:
 
 
 # -----------------------------------------------------------------------
-# GENERATE TEXT  (English only)
+# GENERATE TEXT  — standard short answers (normal chat)
 # -----------------------------------------------------------------------
-def generate_text(prompt: str) -> str | None:
+def generate_text(prompt: str, max_new_tokens: int = 150) -> str | None:
     try:
         inputs = tokenizer(
             prompt, return_tensors="pt", truncation=True, max_length=512
         ).to(device)
         outputs = model.generate(
             **inputs,
-            max_new_tokens=150,
+            max_new_tokens=max_new_tokens,
             temperature=0.3,
             do_sample=True,
             top_p=0.85,
@@ -70,10 +67,119 @@ def generate_text(prompt: str) -> str | None:
 
 
 # -----------------------------------------------------------------------
-# DETECT LANGUAGE  (Unicode range heuristic)
+# GENERATE TEXT LONG — for image/PDF upload (detailed answers)
+# -----------------------------------------------------------------------
+def generate_text_long(prompt: str) -> str:
+    """
+    ✅ Used by image_routes.py for uploaded image/PDF questions.
+
+    Problem: flan-t5-base max output = 512 tokens (~300-400 words).
+    Solution:
+      1. Extract the document text + question from prompt
+      2. Build a clean focused prompt
+      3. Run TWO generation passes and combine for longer answer
+      4. Fallback: extract key sentences directly from document text
+    """
+    try:
+        # ✅ Extract document text and question from the prompt
+        doc_match = re.search(
+            r"DOCUMENT TEXT START =====\n(.*?)\n===== DOCUMENT TEXT END",
+            prompt, re.DOTALL
+        )
+        question_match = re.search(
+            r'student\'s question is:\n"(.*?)"',
+            prompt, re.DOTALL
+        )
+
+        doc_text  = doc_match.group(1).strip()   if doc_match   else ""
+        question  = question_match.group(1).strip() if question_match else ""
+
+        # ✅ Trim document text to fit model input (keep most relevant part)
+        doc_text_trimmed = doc_text[:1500]
+
+        # ✅ Pass 1 — direct answer
+        pass1_prompt = f"""Read the following document text carefully and answer the question in detail.
+
+Document:
+{doc_text_trimmed}
+
+Question: {question}
+
+Give a detailed answer in 5-8 sentences:"""
+
+        inputs1 = tokenizer(
+            pass1_prompt, return_tensors="pt",
+            truncation=True, max_length=800
+        ).to(device)
+
+        out1 = model.generate(
+            **inputs1,
+            max_new_tokens=512,
+            temperature=0.7,
+            do_sample=True,
+            top_p=0.92,
+            repetition_penalty=1.3,
+            no_repeat_ngram_size=3,
+        )
+        answer1 = tokenizer.decode(out1[0], skip_special_tokens=True).strip()
+
+        # ✅ Pass 2 — elaborate further
+        pass2_prompt = f"""Elaborate further on this answer about "{question}":
+
+{answer1}
+
+Add more details and explanation:"""
+
+        inputs2 = tokenizer(
+            pass2_prompt, return_tensors="pt",
+            truncation=True, max_length=600
+        ).to(device)
+
+        out2 = model.generate(
+            **inputs2,
+            max_new_tokens=400,
+            temperature=0.7,
+            do_sample=True,
+            top_p=0.92,
+            repetition_penalty=1.3,
+            no_repeat_ngram_size=3,
+        )
+        answer2 = tokenizer.decode(out2[0], skip_special_tokens=True).strip()
+
+        # ✅ Combine if answer2 adds new content
+        if answer2 and answer2.strip() != answer1.strip() and len(answer2) > 30:
+            full_answer = answer1 + "\n\n" + answer2
+        else:
+            full_answer = answer1
+
+        # ✅ If still too short, directly pull from document text
+        if len(full_answer.strip()) < 100 and doc_text:
+            sentences = re.split(r'(?<=[.!?])\s+', doc_text)
+            sentences = [s.strip() for s in sentences if len(s.strip()) > 40]
+            fallback = " ".join(sentences[:6])
+            full_answer = full_answer + "\n\n" + fallback if full_answer else fallback
+
+        return full_answer.strip()
+
+    except Exception as e:
+        print("AI Long Error:", e)
+        # ✅ Hard fallback — extract sentences directly from document text
+        doc_match = re.search(
+            r"DOCUMENT TEXT START =====\n(.*?)\n===== DOCUMENT TEXT END",
+            prompt, re.DOTALL
+        )
+        if doc_match:
+            doc_text = doc_match.group(1).strip()
+            sentences = re.split(r'(?<=[.!?])\s+', doc_text)
+            sentences = [s.strip() for s in sentences if len(s.strip()) > 40]
+            return " ".join(sentences[:6]) if sentences else doc_text[:500]
+        return "❌ Could not generate answer. Please try again."
+
+
+# -----------------------------------------------------------------------
+# DETECT LANGUAGE
 # -----------------------------------------------------------------------
 def detect_language(text: str) -> str:
-    """Returns 'telugu', 'hindi', or 'english'."""
     telugu_chars = sum(1 for c in text if "\u0C00" <= c <= "\u0C7F")
     hindi_chars  = sum(1 for c in text if "\u0900" <= c <= "\u097F")
     if telugu_chars > 2:
@@ -84,7 +190,7 @@ def detect_language(text: str) -> str:
 
 
 # -----------------------------------------------------------------------
-# MATH SOLVER  (SymPy)
+# MATH SOLVER
 # -----------------------------------------------------------------------
 _MATH_KEYWORDS = re.compile(
     r"\b(solve|calculate|compute|simplify|factorise|factor|expand|differentiate|integrate|find x|find y)\b",
@@ -166,7 +272,7 @@ def solve_math(question: str) -> str:
 
 
 # -----------------------------------------------------------------------
-# WIKIPEDIA SEARCH
+# WIKIPEDIA
 # -----------------------------------------------------------------------
 def get_wiki(query: str) -> str | None:
     try:
@@ -206,7 +312,7 @@ def build_wiki_query(question: str, subject: str) -> str:
 
 
 # -----------------------------------------------------------------------
-# AI REFINER  — returns PLAIN text (no emoji, no formatting prefix)
+# AI REFINER
 # -----------------------------------------------------------------------
 def refine_answer_plain(question: str, reference: str) -> str | None:
     prompt = f"""You are a helpful tutor. Using ONLY the reference text below, answer the student's question in simple English (3-4 sentences). Reply with plain text only, no bullet points or special characters.
@@ -221,14 +327,12 @@ Answer:"""
     if result and len(result.strip()) >= 20:
         return result.strip()
 
-    # Fallback: extract sentences from Wikipedia text directly
     sentences = re.split(r"(?<=[.!?])\s+", reference)
     sentences = [s.strip() for s in sentences if len(s.strip()) > 20]
     return " ".join(sentences[:3]) if sentences else None
 
 
 def answer_in_english(question: str) -> str | None:
-    """Plain English answer via AI (no Wikipedia)."""
     prompt = f"""Answer the following question clearly in simple English (3-4 sentences). Reply with plain text only.
 
 Question: {question}
@@ -238,29 +342,103 @@ Answer:"""
 
 
 # -----------------------------------------------------------------------
-# MULTILINGUAL ANSWER HANDLER  (Telugu / Hindi)
+# ENGLISH SUBJECT HANDLER
+# -----------------------------------------------------------------------
+_MEANING_RE   = re.compile(r"\b(meaning|definition|define|what is|what does .* mean)\b", re.IGNORECASE)
+_SYNONYM_RE   = re.compile(r"\b(synonym|synonyms|similar words?|another word for|other words? for)\b", re.IGNORECASE)
+_ANTONYM_RE   = re.compile(r"\b(antonym|antonyms|opposite|opposites|opposite words?)\b", re.IGNORECASE)
+_SENTENCE_RE  = re.compile(r"\b(use in a sentence|example sentence|sentence using|sentence for)\b", re.IGNORECASE)
+_SPELLING_RE  = re.compile(r"\b(spelling|spell|correct spelling)\b", re.IGNORECASE)
+
+
+def _extract_target_word(question: str) -> str:
+    match = re.search(
+        r"\b(?:meaning|definition|synonym|antonym|opposite|spelling|sentence)\s+(?:of|for|to)\s+([a-zA-Z]+)",
+        question, re.IGNORECASE
+    )
+    if match:
+        return match.group(1)
+    match = re.search(r"what does ([a-zA-Z]+) mean", question, re.IGNORECASE)
+    if match:
+        return match.group(1)
+    match = re.search(r"define ([a-zA-Z]+)", question, re.IGNORECASE)
+    if match:
+        return match.group(1)
+    match = re.search(r"use ([a-zA-Z]+) in a sentence", question, re.IGNORECASE)
+    if match:
+        return match.group(1)
+    words = re.findall(r"[a-zA-Z]+", question)
+    return words[-1] if words else question
+
+
+def answer_english_subject(question: str) -> str:
+    q = question.strip()
+    word = _extract_target_word(q)
+
+    if _MEANING_RE.search(q):
+        prompt = f"""Give the clear meaning and definition of the English word "{word}" in 2-3 simple sentences. Include the part of speech (noun/verb/adjective etc.) and one example sentence. Reply with plain text only."""
+        result = generate_text(prompt)
+        if result and len(result.strip()) >= 10:
+            return f"📘 English - Meaning of '{word}':\n\n{result.strip()}"
+        return f"📘 English - Meaning of '{word}':\n\nCould not find the meaning. Please check the word spelling."
+
+    if _SYNONYM_RE.search(q):
+        prompt = f"""List 5 synonyms (similar words) for the English word "{word}". For each synonym, give a very short meaning. Reply with plain text only, one synonym per line."""
+        result = generate_text(prompt)
+        if result and len(result.strip()) >= 10:
+            return f"📘 English - Synonyms of '{word}':\n\n{result.strip()}"
+        return f"📘 English - Synonyms of '{word}':\n\nCould not find synonyms."
+
+    if _ANTONYM_RE.search(q):
+        prompt = f"""List 5 antonyms (opposite words) for the English word "{word}". For each antonym, give a very short meaning. Reply with plain text only, one antonym per line."""
+        result = generate_text(prompt)
+        if result and len(result.strip()) >= 10:
+            return f"📘 English - Antonyms of '{word}':\n\n{result.strip()}"
+        return f"📘 English - Antonyms of '{word}':\n\nCould not find antonyms."
+
+    if _SENTENCE_RE.search(q):
+        prompt = f"""Write 3 simple example sentences using the English word "{word}". Each sentence should clearly show the meaning of the word. Reply with plain text only, one sentence per line."""
+        result = generate_text(prompt)
+        if result and len(result.strip()) >= 10:
+            return f"📘 English - Sentences using '{word}':\n\n{result.strip()}"
+        return f"📘 English - Sentences using '{word}':\n\nCould not generate sentences."
+
+    if _SPELLING_RE.search(q):
+        prompt = f"""Give the correct spelling of the word "{word}" and break it into syllables. Also give a short meaning. Reply with plain text only."""
+        result = generate_text(prompt)
+        if result and len(result.strip()) >= 5:
+            return f"📘 English - Spelling of '{word}':\n\n{result.strip()}"
+        return f"📘 English - Spelling:\n\nThe correct spelling is: {word}"
+
+    prompt = f"""You are an English language tutor. Answer the following English question clearly in simple language (3-4 sentences). Reply with plain text only.
+
+Question: {q}
+
+Answer:"""
+    result = generate_text(prompt)
+    if result and len(result.strip()) >= 20:
+        return f"📘 English:\n\n{result.strip()}"
+
+    wiki = get_wiki(q)
+    if wiki:
+        plain = refine_answer_plain(q, wiki)
+        if plain:
+            return f"📘 English:\n\n{plain}"
+
+    return "❌ Could not find an answer. Please rephrase your English question."
+
+
+# -----------------------------------------------------------------------
+# MULTILINGUAL ANSWER HANDLER
 # -----------------------------------------------------------------------
 def answer_in_language(question: str, lang_code: str, lang_name: str) -> str:
-    """
-    Key fix: we translate ONLY plain text sentences, never the formatted
-    string with emoji/newlines — Google Translate drops content when it
-    sees those characters, returning just a dot.
-
-    Flow:
-      1. Translate question → English
-      2. Get a PLAIN English answer (no emoji, no prefix)
-      3. Translate each sentence individually → target language
-      4. Reassemble with formatting prefix
-    """
     print(f"[{lang_name}] question: {question}")
 
-    # Step 1: question → English
     english_question = _google_translate(question, dest="en", src=lang_code)
     print(f"[{lang_name}] english_question: {english_question}")
     if not english_question or len(english_question.strip()) < 3:
         english_question = question
 
-    # Step 2: plain English answer
     wiki = get_wiki(english_question)
     if wiki:
         plain_english = refine_answer_plain(english_question, wiki)
@@ -272,7 +450,6 @@ def answer_in_language(question: str, lang_code: str, lang_name: str) -> str:
     if not plain_english:
         return f"❌ Could not generate an answer for this {lang_name} question."
 
-    # Step 3: translate sentence by sentence (avoids Google dropping content)
     sentences = re.split(r"(?<=[.!?])\s+", plain_english)
     translated_parts = []
     for sent in sentences:
@@ -280,19 +457,16 @@ def answer_in_language(question: str, lang_code: str, lang_name: str) -> str:
         if not sent:
             continue
         t = _google_translate(sent, dest=lang_code, src="en")
-        print(f"[{lang_name}] translated: {t}")
         if t:
             translated_parts.append(t)
 
     if translated_parts:
         return f"📘 {lang_name}:\n\n" + " ".join(translated_parts)
 
-    # Step 4: fallback — translate whole block at once
     translated_whole = _google_translate(plain_english, dest=lang_code, src="en")
     if translated_whole:
         return f"📘 {lang_name}:\n\n{translated_whole}"
 
-    # Final fallback
     return f"[{lang_name} translation unavailable]\n\n📘 English Answer:\n\n{plain_english}"
 
 
@@ -311,19 +485,18 @@ def generate_answer(
     subject_lower = subject.strip().lower()
     q = question.strip()
 
-    # Telugu
     if subject_lower == "telugu" or detect_language(q) == "telugu":
         return answer_in_language(q, lang_code="te", lang_name="Telugu")
 
-    # Hindi
     if subject_lower == "hindi" or detect_language(q) == "hindi":
         return answer_in_language(q, lang_code="hi", lang_name="Hindi")
 
-    # Maths
+    if subject_lower == "english":
+        return answer_english_subject(q)
+
     if subject_lower == "maths" or (subject_lower == "general" and is_math_question(q)):
         return solve_math(q)
 
-    # Science subjects
     if subject_lower in SCIENCE_SUBJECTS:
         wiki_query = build_wiki_query(q, subject_lower)
         wiki = get_wiki(wiki_query)
@@ -336,7 +509,6 @@ def generate_answer(
             return f"📘 {subject.capitalize()}:\n\n{ai_answer}"
         return "❌ No answer found. Please try rephrasing the question."
 
-    # General fallback
     wiki = get_wiki(q)
     if wiki:
         plain = refine_answer_plain(q, wiki)

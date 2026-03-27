@@ -4,489 +4,497 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Homework Helper</title>
-
-  <!-- GOOGLE FONT -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Patrick+Hand&display=swap" rel="stylesheet">
-  <!-- CSS FILE -->
+  <link href="https://fonts.googleapis.com/css2?family=Sora:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="css/dashboard.css">
-
+  
 </head>
-
 <body>
 
   <header class="topbar">
-
-  <!-- LEFT -->
-  <div class="nav-left">
-    <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-
-    <div class="logo">
-      🎓 AI-Powered Homework Assistance System
+    <div class="nav-left">
+      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+      <div class="logo">🎓 AI-Powered Homework Assistance System</div>
     </div>
-  </div>
-
-  <!-- CENTER -->
-  <!--<div class="nav-center">
-    AI Homework Assistance System
-  </div>!>
-
-  <!- RIGHT -->
-  <div class="nav-right">
-
-    <div>Hello Student!</div>
-
-    <div class="streak-box">
-  🔥 <span id="streakCount">0</span>
-</div>
-    <!-- PROFILE -->
-    <div class="profile-wrapper">
-      <div class="profile-circle" onclick="toggleProfileMenu()">👩‍🎓</div>
-
-      <div id="profileMenu" class="profile-menu">
-        <p onclick="editProfile()">✏ Edit Profile</p>
-        <p onclick="openSettings()">⚙ Settings</p>
-        <p onclick="logout()">🚪 Logout</p>
+    <div class="nav-right">
+      <div>Hello Student!</div>
+      <div class="streak-box">🔥 <span id="streakCount">0</span></div>
+      <button class="dark-toggle-btn" onclick="toggleDark()">🌙</button>
+      <div class="profile-wrapper">
+        <div class="profile-circle" onclick="toggleProfileMenu()">👩‍🎓</div>
+        <div id="profileMenu" class="profile-menu">
+          <p onclick="editProfile()">✏ Edit Profile</p>
+          <p onclick="openSettings()">⚙ Settings</p>
+          <p onclick="logout()">🚪 Logout</p>
+        </div>
       </div>
     </div>
-
-  </div>
-
-</header>
+  </header>
 
   <div class="layout">
 
-  <!-- SIDEBAR -->
-  <div class="sidebar" id="sidebar">
-    <button onclick="showSection('home')">🏠 Dashboard</button>
-    <button onclick="showSection('ask')">🤖 Ask AI</button>
-    <button onclick="showSection('planner')">📅 Planner</button>
-    <button onclick="showSection('quiz')">❓ Quiz</button>
-    <button onclick="showSection('grammar')">✏ Grammar</button>
-    <button onclick="showSection('puzzle')">🎮 Puzzle</button>
-    <button onclick="showSection('flashcards')">🧠 Flashcards</button>
-    <button onclick="showSection('pomodoro')">🍅 Pomodoro</button>
-    <button onclick="showSection('geo')">🌍 General Knowledge</button>
-    <button onclick="toggleDark()">🌙</button>
-  </div>
-
-
-  <div class="main">
-
-  <!-- DASHBOARD -->
-  <div id="home" class="section active">
-
-    <div class="hero">
-  <h2>🤖 AI Homework Assistant</h2>
-  <h4>Get instant help with maths, science, Telugu, Hindi, and more — anytime you need it.</h4>
-</div>
-
-    <div class="card">
-      <h3>📚 Subjects</h3>
-      <div class="subjects">
-        <div class="subject" onclick="openSubject('Maths')">Math</div>
-<div class="subject" onclick="openSubject('Physics')">Physics</div>
-<div class="subject" onclick="openSubject('Chemistry')">Chemistry</div>
-<div class="subject" onclick="openSubject('Biology')">Biology</div>
-<div class="subject" onclick="openSubject('Telugu')">తెలుగు</div>
-<div class="subject" onclick="openSubject('Hindi')">हिन्दी</div>
-<div class="subject" onclick="openSubject('Social')">Social</div>
-<div class="subject" onclick="openSubject('Computer')">Computer</div>
-
-      </div>
+    <!-- SIDEBAR -->
+    <div class="sidebar" id="sidebar">
+      <button onclick="showSection('home')">🏠 Dashboard</button>
+      <button onclick="showSection('ask')">🤖 Ask AI</button>
+      <button onclick="showSection('planner')">📅 Planner</button>
+      <button onclick="showSection('quiz')">❓ Quiz</button>
+      <button onclick="showSection('grammar')">✏ Grammar</button>
+      <button onclick="showSection('puzzle')">🎮 Puzzle</button>
+      <button onclick="showSection('flashcards')">🧠 Flashcards</button>
+      <button onclick="showSection('pomodoro')">🍅 Pomodoro</button>
+      <button onclick="showSection('geo')">🌍 General Knowledge</button>
     </div>
 
-    <h3>🎥 Learning Shorts</h3>
+    <div class="main">
 
-    <div class="videos">
-      <div class="video-card" onclick="openVideo('q01E63DwN1c')">
-        <img src="https://img.youtube.com/vi/q01E63DwN1c/0.jpg">
-      </div>
-
-      <div class="video-card" onclick="openVideo('vacGRuHDtO0')">
-        <img src="https://img.youtube.com/vi/vacGRuHDtO0/0.jpg">
-      </div>
-
-      <div class="video-card" onclick="openVideo('OQXanWrIUF8')">
-        <img src="https://img.youtube.com/vi/OQXanWrIUF8/0.jpg">
-      </div>
-
-      <div class="video-card" onclick="openVideo('PGUdWfB8nLg')">
-        <img src="https://img.youtube.com/vi/PGUdWfB8nLg/0.jpg">
-      </div>
-    </div>
-
-  </div>
-
-<!-- ================= ASK AI ================= -->
-<div id="ask" class="section">
-
-  <div class="chatgpt-container">
-
-    <!-- LEFT SIDEBAR (CHAT LIST) -->
-    <div class="chat-sidebar">
-      <button onclick="createNewChat()">➕ New Chat</button>
-      <div id="chatList"></div>
-    </div>
-
-    <!-- RIGHT CHAT AREA -->
-    <div class="chat-main">
-
-      <!-- HEADER -->
-      <div class="chat-header">
-        🤖 Ask AI Assistant
-      </div>
-
-      <!-- CHAT AREA -->
-      <div id="chatArea" class="chat-area"></div>
-
-      <!-- INPUT AREA -->
-      <div class="chat-input-area">
-
-        <input type="text" id="question" placeholder="Ask anything..." />
-
-        <!-- VOICE -->
-        <button onclick="startVoice()">🎙️</button>
-        <button onclick="stopVoice()">⛔</button>
-        <button onclick="speakText(document.getElementById('chatArea').innerText)">🔊</button>
-
-        <!-- AFTER (correct) -->
-<input type="file" id="imageInput" hidden accept=".jpg,.jpeg,.png,.bmp,.webp,.pdf">
-<button onclick="document.getElementById('imageInput').click()">📷</button>
-
-        <!-- SEND -->
-        <button onclick="askAI()">➤</button>
-
-      </div>
-
-    </div>
-
-  </div>
-
-</div>
-
-
-<!-- ================= PLANNER ================= -->
-<!-- ================= SMART STUDY PLANNER ================= -->
-<div id="planner" class="section">
-
-  <div class="planner-container smart-planner">
-
-    <h1>📅 Smart Study Planner</h1>
-    <p class="planner-subtitle">
-      Enter your previous marks and get your performance level, study tips, and a personalized study plan.
-    </p>
-
-    <!-- STUDENT DETAILS -->
-    <div class="planner-top smart-top">
-      <input id="studentName" placeholder="👩‍🎓 Enter Student Name">
-      <input id="studentClass" placeholder="🏫 Enter Class (Example: 10th / Inter / B.Tech)">
-      <input type="date" id="date">
-    </div>
-
-    <!-- SUBJECT MARKS -->
-    <div class="marks-section">
-      <h3>📊 Enter Previous Marks</h3>
-
-      <div class="marks-grid">
-        <div class="mark-card">
-          <label>📘 English</label>
-          <input type="number" id="markEnglish" placeholder="Out of 100">
+      <!-- DASHBOARD -->
+      <div id="home" class="section active">
+        <div class="hero">
+          <h2>🤖 AI Homework Assistant</h2>
+          <h4>Get instant help with maths, science, Telugu, Hindi, and more — anytime you need it.</h4>
         </div>
-
-        <div class="mark-card">
-          <label>➗ Maths</label>
-          <input type="number" id="markMaths" placeholder="Out of 100">
+        <div class="card">
+          <h3>📚 Subjects</h3>
+          <div class="subjects">
+            <div class="subject" onclick="openSubject('Maths')">Math</div>
+            <div class="subject" onclick="openSubject('Physics')">Physics</div>
+            <div class="subject" onclick="openSubject('Chemistry')">Chemistry</div>
+            <div class="subject" onclick="openSubject('Biology')">Biology</div>
+            <div class="subject" onclick="openSubject('Telugu')">తెలుగు</div>
+            <div class="subject" onclick="openSubject('Hindi')">हिन्दी</div>
+            <div class="subject" onclick="openSubject('English')">English</div>
+            <div class="subject" onclick="openSubject('Social')">Social</div>
+            <div class="subject" onclick="openSubject('Computer')">Computer</div>
+          </div>
         </div>
-
-        <div class="mark-card">
-          <label>🔬 Science</label>
-          <input type="number" id="markScience" placeholder="Out of 100">
-        </div>
-
-        <div class="mark-card">
-          <label>🌍 Social</label>
-          <input type="number" id="markSocial" placeholder="Out of 100">
-        </div>
-
-        <div class="mark-card">
-          <label>💻 Computer</label>
-          <input type="number" id="markComputer" placeholder="Out of 100">
-        </div>
-
-        <div class="mark-card">
-          <label>📝 Optional Subject</label>
-          <input type="number" id="markOptional" placeholder="Out of 100">
+        <h3>🎥 Learning Shorts</h3>
+        <div class="videos">
+          <div class="video-card" onclick="openVideo('q01E63DwN1c')"><img src="https://img.youtube.com/vi/q01E63DwN1c/0.jpg"></div>
+          <div class="video-card" onclick="openVideo('vacGRuHDtO0')"><img src="https://img.youtube.com/vi/vacGRuHDtO0/0.jpg"></div>
+          <div class="video-card" onclick="openVideo('OQXanWrIUF8')"><img src="https://img.youtube.com/vi/OQXanWrIUF8/0.jpg"></div>
+          <div class="video-card" onclick="openVideo('PGUdWfB8nLg')"><img src="https://img.youtube.com/vi/PGUdWfB8nLg/0.jpg"></div>
         </div>
       </div>
-    </div>
 
-    <!-- GOALS -->
-    <div class="goals-box">
-      <h3>🎯 Study Goal</h3>
-      <textarea id="studyGoal" placeholder="Example: I want to improve Maths and score above 90% in exams"></textarea>
-    </div>
+      <!-- ===== ASK AI ===== -->
+      <div id="ask" class="section">
+        <div class="chatgpt-container">
 
-    <!-- SAVE BUTTON -->
-    <button class="save-btn" onclick="generateStudyPlanner()">🚀 Generate My Study Planner</button>
+          <!-- LEFT SIDEBAR -->
+          <div class="chat-sidebar">
 
-    <!-- OUTPUT -->
-    <div id="plannerOutput" class="planner-output"></div>
+            <!-- Subject chips -->
+            <div class="chat-list-label">📚 Subjects</div>
+            <div class="subject-grid">
+              <div class="subject-chip" data-subject="Maths"     onclick="openSubject('Maths')">    <span class="chip-icon">➗</span>Maths</div>
+              <div class="subject-chip" data-subject="Physics"   onclick="openSubject('Physics')">  <span class="chip-icon">⚡</span>Physics</div>
+              <div class="subject-chip" data-subject="Chemistry" onclick="openSubject('Chemistry')"><span class="chip-icon">🧪</span>Chemistry</div>
+              <div class="subject-chip" data-subject="Biology"   onclick="openSubject('Biology')">  <span class="chip-icon">🧬</span>Biology</div>
+              <div class="subject-chip" data-subject="Telugu"    onclick="openSubject('Telugu')">   <span class="chip-icon">🅣</span>తెలుగు</div>
+              <div class="subject-chip" data-subject="Hindi"     onclick="openSubject('Hindi')">    <span class="chip-icon">🅗</span>हिन्दी</div>
+              <div class="subject-chip" data-subject="English"   onclick="openSubject('English')">  <span class="chip-icon">📖</span>English</div>
+              <div class="subject-chip" data-subject="Social"    onclick="openSubject('Social')">   <span class="chip-icon">🌍</span>Social</div>
+              <div class="subject-chip" data-subject="Computer"  onclick="openSubject('Computer')"> <span class="chip-icon">💻</span>Computer</div>
+            </div>
 
-  </div>
+            <hr class="sidebar-divider">
 
-</div>  
-<!-- ================= QUIZ ================= -->
-<div id="quiz" class="section">
+            <!-- New chat -->
+           <button class="new-chat-btn" onclick="createNewChat()">
+  ✨ New Chat
+</button>
 
-  <!-- START SCREEN -->
-  <div class="quiz-start-screen">
+            <!-- Chat history label -->
+            <div class="chat-list-label">💬 Recent Chats</div>
+            <div id="chatList"></div>
 
-    <h1 class="quiz-title">
-      START<br>QUIZ
-    </h1>
+          </div>
 
-    <button class="start-btn" onclick="startQuiz()">
-      ▶ Start Quiz
-    </button>
+          <!-- RIGHT CHAT AREA -->
+          <div class="chat-main">
 
-  </div>
+            <div class="chat-header">
+              🤖 Ask AI Assistant
+              <span class="chat-header-badge" id="subjectBadge">Select a subject</span>
+            </div>
 
-  <!-- QUIZ AREA -->
-  <div id="quizArea"></div>
+            <div id="chatArea" class="chat-area">
+              <!-- Welcome shown by JS -->
+            </div>
 
-  <!-- RESULT -->
-  <div id="resultBox"></div>
+            <div class="chat-input-area">
+              <div class="input-wrapper">
+                <input type="text" id="question" placeholder="Ask anything… or upload a file 📎" onkeydown="if(event.key==='Enter') askAI()"/>
+                <button class="input-btn" onclick="startVoice()"  title="Voice input">🎙️</button>
+                <button class="input-btn" onclick="stopVoice()"   title="Stop voice">⛔</button>
+                <button class="input-btn" onclick="speakText(document.getElementById('chatArea').innerText)" title="Read aloud">🔊</button>
+                <input type="file" id="imageInput" hidden accept=".jpg,.jpeg,.png,.bmp,.webp,.pdf">
+                <button class="input-btn" onclick="document.getElementById('imageInput').click()" title="Upload image/PDF">📷</button>
+                <button class="send-btn"  onclick="askAI()" title="Send">➤</button>
+              </div>
+              <div class="input-hint">Press Enter or ➤ to send &nbsp;·&nbsp; 📷 Upload image or PDF</div>
+            </div>
 
-</div>
-
-
-
-<!-- ================= GRAMMAR ================= -->
-<!-- ================= GRAMMAR ================= -->
-<div id="grammar" class="section">
-
-  <h2 class="section-title">✏️ Grammar Learning</h2>
-
-  <!-- CARDS -->
-  <div class="grammar-grid">
-
-    <div class="grammar-card" onclick="openGrammarTopic('tenses')">
-      <h3>📘 Tenses</h3>
-      <p>Understand Present, Past, and Future tenses to describe actions clearly.</p>
-    </div>
-
-    <div class="grammar-card" onclick="openGrammarTopic('parts')">
-      <h3>🧩 Parts of Speech</h3>
-      <p>Noun, Verb, Adjective, Adverb, Pronoun, Preposition explained simply.</p>
-    </div>
-
-    <div class="grammar-card" onclick="openGrammarTopic('voice')">
-      <h3>🔄 Active & Passive</h3>
-      <p>Learn how sentences change from active voice to passive voice.</p>
-    </div>
-
-    <div class="grammar-card" onclick="openGrammarTopic('vocabulary')">
-      <h3>📚 Vocabulary</h3>
-      <p>Improve synonyms, antonyms, and word meanings.</p>
-    </div>
-
-    <div class="grammar-card" onclick="openGrammarTopic('punctuation')">
-      <h3>✍️ Punctuation</h3>
-      <p>Master commas, full stops, question marks, and more.</p>
-    </div>
-
-    <div class="grammar-card" onclick="openGrammarTopic('sentence')">
-      <h3>📝 Sentence Structure</h3>
-      <p>Build correct sentences using Subject + Verb + Object.</p>
-    </div>
-
-  </div>
-
-  <!-- CLICKED TOPIC CONTENT -->
-  <div id="grammarTopicDisplay" class="grammar-topic-display">
-    <div class="grammar-placeholder">
-      <h3>📚 Select a Grammar Topic</h3>
-      <p>Click any grammar card above to learn with colorful notes and examples.</p>
-    </div>
-  </div>
-
-  <!-- CHECKER -->
-  <div class="grammar-check-box">
-
-    <h3 class="grammar-heading">🔍 Check Your Grammar</h3>
-
-    <div class="editor-container">
-      <textarea id="grammarInput" placeholder="Start writing here to check grammar..."></textarea>
-
-      <button onclick="checkGrammar()" class="check-btn">
-        ✨ Check Grammar
-      </button>
-    </div>
-
-    <div id="grammarResult" class="grammar-result"></div>
-
-  </div>
-</div>  
-<!-- ================= PUZZLE ================= -->
-<div id="puzzle" class="section">
-
-  <div class="puzzle-container">
-
-    <h1 class="puzzle-title">🧩 Word Scramble</h1>
-
-    <!-- SCRAMBLED WORD -->
-    <div id="scrambledWord" class="scramble-box">
-      LOADING...
-    </div>
-
-    <!-- INPUT -->
-    <input 
-      type="text" 
-      id="userAnswer" 
-      placeholder="Enter correct word"
-    >
-
-    <!-- BUTTONS -->
-    <div class="puzzle-buttons">
-      <button onclick="checkPuzzle()">✔ Check</button>
-      <button onclick="newPuzzle()">🔄 New</button>
-    </div>
-
-    <!-- RESULT -->
-    <div id="puzzleResult" class="puzzle-result"></div>
-
-  </div>
-
-</div>
-
-
-<!-- ================= FLASHCARDS ================= -->
-<div id="flashcards" class="section">
-
-  <div class="flashcard-container">
-
-    <h1 class="flash-title">🧠 Flashcards</h1>
-
-    <!-- ADD CARD -->
-    <div class="flash-inputs">
-      <input id="questionInput" placeholder="Enter Question">
-      <input id="answerInput" placeholder="Enter Answer">
-      <button onclick="addFlashcard()">➕ Add Card</button>
-    </div>
-
-    <!-- FLASHCARD -->
-    <div class="flashcard-wrapper">
-
-      <div id="flashcard" class="flashcard" onclick="flipCard()">
-
-        <div class="card-front">
-          <p id="cardQuestion">No cards yet</p>
+          </div>
         </div>
+      </div>
 
-        <div class="card-back">
-          <p id="cardAnswer"></p>
+      <!-- ===== PLANNER ===== -->
+      <div id="planner" class="section">
+        <div class="planner-container smart-planner">
+          <h1>📅 Smart Study Planner</h1>
+          <p class="planner-subtitle">Enter your previous marks and get your performance level, study tips, and a personalized study plan.</p>
+          <div class="planner-top smart-top">
+            <input id="studentName" placeholder="👩‍🎓 Enter Student Name">
+            <input id="studentClass" placeholder="🏫 Enter Class (Example: 10th / Inter / B.Tech)">
+            <input type="date" id="date">
+          </div>
+          <div class="marks-section">
+            <h3>📊 Enter Previous Marks</h3>
+            <div class="marks-grid">
+              <div class="mark-card"><label>📘 English</label><input type="number" id="markEnglish" placeholder="Out of 100"></div>
+              <div class="mark-card"><label>➗ Maths</label><input type="number" id="markMaths" placeholder="Out of 100"></div>
+              <div class="mark-card"><label>🔬 Science</label><input type="number" id="markScience" placeholder="Out of 100"></div>
+              <div class="mark-card"><label>🌍 Social</label><input type="number" id="markSocial" placeholder="Out of 100"></div>
+              <div class="mark-card"><label>💻 Computer</label><input type="number" id="markComputer" placeholder="Out of 100"></div>
+              <div class="mark-card"><label>📝 Optional Subject</label><input type="number" id="markOptional" placeholder="Out of 100"></div>
+            </div>
+          </div>
+          <div class="goals-box">
+            <h3>🎯 Study Goal</h3>
+            <textarea id="studyGoal" placeholder="Example: I want to improve Maths and score above 90% in exams"></textarea>
+          </div>
+          <button class="save-btn" onclick="generateStudyPlanner()">🚀 Generate My Study Planner</button>
+          <div id="plannerOutput" class="planner-output"></div>
         </div>
-
       </div>
 
-    </div>
-
-    <!-- CONTROLS -->
-    <div class="flash-controls">
-      <button onclick="prevCard()">⬅ Prev</button>
-      <button onclick="nextCard()">Next ➡</button>
-      <button onclick="deleteCard()" class="delete-btn">🗑 Delete</button>
-    </div>
-
-    <!-- ALL CARDS LIST -->
-    <!-- ALL CARDS LIST -->
-<div class="flash-list">
-  <h3>📚 All Flashcards</h3>
-  <div id="flashList" class="flash-grid"></div>
-</div>
-
-  </div>
-
-</div>
-
-
-
-<!-- ================= POMODORO ================= -->
-<div id="pomodoro" class="section">
-
-  <div class="pomodoro-container">
-
-    <h1 class="pomodoro-title">🍅 Pomodoro Timer</h1>
-
-    <!-- TIMER DISPLAY -->
-    <div class="timer-circle">
-      <h2 id="timer">25:00</h2>
-    </div>
-
-    <!-- CONTROLS -->
-    <div class="pomodoro-controls">
-      <button onclick="startTimer()">▶ Start</button>
-      <button onclick="pauseTimer()">⏸ Pause</button>
-      <button onclick="resetTimer()">🔄 Reset</button>
-    </div>
-
-    <!-- LABEL -->
-    <p class="pomodoro-info">
-      Focus for 25 minutes, then take a short break ☕
-    </p>
-
-  </div>
-
-</div>
-<!-- ================= GENERAL KNOWLEDGE ================= -->
-<div id="geo" class="section">
-
-  <div class="geo-container">
-
-    <h1 class="geo-title">🌍 General Knowledge Explorer</h1>
-
-    <!-- ================= GEOGRAPHY ================= -->
-    <div class="geo-block">
-
-      <h2 class="sub-title">🌍 Geography Explorer</h2>
-
-      <div class="geo-buttons">
-        <button onclick="loadGeo('countries')">🌎 Countries</button>
-        <button onclick="loadGeo('india')">🇮🇳 India States</button>
-        <button onclick="loadGeo('oceans')">🌊 Oceans</button>
-        <button onclick="loadGeo('continents')">🌐 Continents</button>
-        <button onclick="loadGeo('deserts')">🏜 Deserts</button>
-        <button onclick="loadGeo('rivers')">🏞 Rivers</button>
-        <button onclick="loadGeo('places')">🏛 Places</button>
+      <!-- ===== QUIZ ===== -->
+      <div id="quiz" class="section">
+        <div class="quiz-start-screen">
+          <h1 class="quiz-title">START<br>QUIZ</h1>
+          <button class="start-btn" onclick="startQuiz()">▶ Start Quiz</button>
+        </div>
+        <div id="quizArea"></div>
+        <div id="resultBox"></div>
       </div>
 
-    </div>
-
-    <!-- ================= SCIENCE ================= -->
-    <div class="geo-block">
-
-      <h2 class="sub-title">🔬 Science Explorer</h2>
-
-      <div class="geo-buttons">
-        <button onclick="loadScience('physics')">⚡ Physics</button>
-        <button onclick="loadScience('chemistry')">🧪 Chemistry</button>
-        <button onclick="loadScience('biology')">🧬 Biology</button>
-        <button onclick="loadScience('space')">🚀 Space</button>
-        <button onclick="loadScience('environment')">🌱 Environment</button>
-        <button onclick="loadScience('inventions')">💡 Inventions</button>
+      <!-- ===== GRAMMAR ===== -->
+      <div id="grammar" class="section">
+        <h2 class="section-title">✏️ Grammar Learning</h2>
+        <div class="grammar-grid">
+          <div class="grammar-card" onclick="openGrammarTopic('tenses')"><h3>📘 Tenses</h3><p>Understand Present, Past, and Future tenses to describe actions clearly.</p></div>
+          <div class="grammar-card" onclick="openGrammarTopic('parts')"><h3>🧩 Parts of Speech</h3><p>Noun, Verb, Adjective, Adverb, Pronoun, Preposition explained simply.</p></div>
+          <div class="grammar-card" onclick="openGrammarTopic('voice')"><h3>🔄 Active & Passive</h3><p>Learn how sentences change from active voice to passive voice.</p></div>
+          <div class="grammar-card" onclick="openGrammarTopic('vocabulary')"><h3>📚 Vocabulary</h3><p>Improve synonyms, antonyms, and word meanings.</p></div>
+          <div class="grammar-card" onclick="openGrammarTopic('punctuation')"><h3>✍️ Punctuation</h3><p>Master commas, full stops, question marks, and more.</p></div>
+          <div class="grammar-card" onclick="openGrammarTopic('sentence')"><h3>📝 Sentence Structure</h3><p>Build correct sentences using Subject + Verb + Object.</p></div>
+        </div>
+        <div id="grammarTopicDisplay" class="grammar-topic-display">
+          <div class="grammar-placeholder"><h3>📚 Select a Grammar Topic</h3><p>Click any grammar card above to learn with colorful notes and examples.</p></div>
+        </div>
+        <div class="grammar-check-box">
+          <h3 class="grammar-heading">🔍 Check Your Grammar</h3>
+          <div class="editor-container">
+            <textarea id="grammarInput" placeholder="Start writing here to check grammar..."></textarea>
+            <button onclick="checkGrammar()" class="check-btn">✨ Check Grammar</button>
+          </div>
+          <div id="grammarResult" class="grammar-result"></div>
+        </div>
       </div>
 
-    </div>
+      <!-- ===== PUZZLE ===== -->
+      <div id="puzzle" class="section">
+        <div class="puzzle-container">
+          <h1 class="puzzle-title">🧩 Word Scramble</h1>
+          <div id="scrambledWord" class="scramble-box">LOADING...</div>
+          <input type="text" id="userAnswer" placeholder="Enter correct word">
+          <div class="puzzle-buttons">
+            <button onclick="checkPuzzle()">✔ Check</button>
+            <button onclick="newPuzzle()">🔄 New</button>
+          </div>
+          <div id="puzzleResult" class="puzzle-result"></div>
+        </div>
+      </div>
 
-    <!-- RESULT (COMMON) -->
-    <div id="geoResult" class="geo-result"></div>
+      <!-- ===== FLASHCARDS ===== -->
+      <div id="flashcards" class="section">
+        <div class="flashcard-container">
+          <h1 class="flash-title">🧠 Flashcards</h1>
+          <div class="flash-inputs">
+            <input id="questionInput" placeholder="Enter Question">
+            <input id="answerInput" placeholder="Enter Answer">
+            <button onclick="addFlashcard()">➕ Add Card</button>
+          </div>
+          <div class="flashcard-wrapper">
+            <div id="flashcard" class="flashcard" onclick="flipCard()">
+              <div class="card-front"><p id="cardQuestion">No cards yet</p></div>
+              <div class="card-back"><p id="cardAnswer"></p></div>
+            </div>
+          </div>
+          <div class="flash-controls">
+            <button onclick="prevCard()">⬅ Prev</button>
+            <button onclick="nextCard()">Next ➡</button>
+            <button onclick="deleteCard()" class="delete-btn">🗑 Delete</button>
+          </div>
+          <div class="flash-list">
+            <h3>📚 All Flashcards</h3>
+            <div id="flashList" class="flash-grid"></div>
+          </div>
+        </div>
+      </div>
 
-  </div>
+      <!-- ===== POMODORO ===== -->
+      <div id="pomodoro" class="section">
+        <div class="pomodoro-container">
+          <h1 class="pomodoro-title">🍅 Pomodoro Timer</h1>
+          <div class="timer-circle"><h2 id="timer">25:00</h2></div>
+          <div class="pomodoro-controls">
+            <button onclick="startTimer()">▶ Start</button>
+            <button onclick="pauseTimer()">⏸ Pause</button>
+            <button onclick="resetTimer()">🔄 Reset</button>
+          </div>
+          <p class="pomodoro-info">Focus for 25 minutes, then take a short break ☕</p>
+        </div>
+      </div>
 
-</div>
-  <!-- JS FILE -->
+      <!-- ===== GENERAL KNOWLEDGE ===== -->
+      <div id="geo" class="section">
+        <div class="geo-container">
+          <h1 class="geo-title">🌍 General Knowledge Explorer</h1>
+          <div class="geo-block">
+            <h2 class="sub-title">🌍 Geography Explorer</h2>
+            <div class="geo-buttons">
+              <button onclick="loadGeo('countries')">🌎 Countries</button>
+              <button onclick="loadGeo('india')">🇮🇳 India States</button>
+              <button onclick="loadGeo('oceans')">🌊 Oceans</button>
+              <button onclick="loadGeo('continents')">🌐 Continents</button>
+              <button onclick="loadGeo('deserts')">🏜 Deserts</button>
+              <button onclick="loadGeo('rivers')">🏞 Rivers</button>
+              <button onclick="loadGeo('places')">🏛 Places</button>
+            </div>
+          </div>
+          <div class="geo-block">
+            <h2 class="sub-title">🔬 Science Explorer</h2>
+            <div class="geo-buttons">
+              <button onclick="loadScience('physics')">⚡ Physics</button>
+              <button onclick="loadScience('chemistry')">🧪 Chemistry</button>
+              <button onclick="loadScience('biology')">🧬 Biology</button>
+              <button onclick="loadScience('space')">🚀 Space</button>
+              <button onclick="loadScience('environment')">🌱 Environment</button>
+              <button onclick="loadScience('inventions')">💡 Inventions</button>
+            </div>
+          </div>
+          <div id="geoResult" class="geo-result"></div>
+        </div>
+      </div>
+
+    </div><!-- /.main -->
+  </div><!-- /.layout -->
+
   <script src="js/dashboard.js"></script>
 
-  </body>
+  <script>
+  /* ============================================================
+     PATCH: update openSubject + render functions for new UI
+     ============================================================ */
+
+  // Subject metadata for welcome screen
+  const SUBJECT_META = {
+    Maths:     { icon:"➗", color:"#f59e0b", tips:["Solve an equation","Explain Pythagoras","What is integration?"] },
+    Physics:   { icon:"⚡", color:"#06b6d4", tips:["Newton's laws","What is gravity?","Speed of light"] },
+    Chemistry: { icon:"🧪", color:"#10b981", tips:["Periodic table","What is a covalent bond?","Explain pH"] },
+    Biology:   { icon:"🧬", color:"#84cc16", tips:["What is mitosis?","Explain photosynthesis","DNA structure"] },
+    Telugu:    { icon:"🅣",  color:"#f97316", tips:["ఒక కవిత రాయి","అర్థం చెప్పు","వాక్యం రాయి"] },
+    Hindi:     { icon:"🅗",  color:"#ec4899", tips:["एक वाक्य लिखो","अर्थ बताओ","व्याकरण समझाओ"] },
+    English:   { icon:"📖", color:"#8b5cf6", tips:["Synonyms of brave","Explain tense","Write a paragraph"] },
+    Social:    { icon:"🌍", color:"#ef4444", tips:["French Revolution","What is democracy?","World War II"] },
+    Computer:  { icon:"💻", color:"#6c63ff", tips:["What is an algorithm?","Explain HTML","Python basics"] },
+  };
+
+  // Override openSubject to update UI
+  const _origOpenSubject = window.openSubject;
+  window.openSubject = function(subject) {
+    _origOpenSubject(subject);
+    // Update subject chips
+    document.querySelectorAll('.subject-chip').forEach(c => {
+      c.classList.toggle('active', c.dataset.subject === subject);
+    });
+    // Update header badge
+    const badge = document.getElementById('subjectBadge');
+    if (badge) {
+      const meta = SUBJECT_META[subject] || {};
+      badge.textContent = (meta.icon || '📘') + ' ' + subject + ' Mode';
+    }
+  };
+
+  // Override loadChat to use new message structure
+  const _origLoadChat = window.loadChat;
+  window.loadChat = function(chatId) {
+    if (!selectedSubject) return;
+    currentChatId = chatId;
+    localStorage.setItem(selectedSubject + "_currentChatId", chatId);
+    const key = selectedSubject + "_" + chatId;
+    const chatData = JSON.parse(localStorage.getItem(key)) || [];
+    const chatArea = document.getElementById("chatArea");
+
+    const meta = SUBJECT_META[selectedSubject] || { icon:'🤖', color:'#6c63ff' };
+    chatArea.innerHTML = `
+      <div class="subject-banner">
+        <div class="banner-icon">${meta.icon}</div>
+        <h2>${selectedSubject} AI Tutor</h2>
+        <p>Ask me anything about ${selectedSubject}. I'm here to help!</p>
+        <div class="banner-suggestions">
+          ${(meta.tips || []).map(t => `<div class="suggestion-pill" onclick="document.getElementById('question').value='${t}'">${t}</div>`).join('')}
+        </div>
+      </div>
+    `;
+
+    chatData.forEach(msg => {
+      chatArea.innerHTML += buildUserMsg(msg.q) + buildAiMsg(msg.a);
+    });
+    chatArea.scrollTop = chatArea.scrollHeight;
+  };
+
+  function buildUserMsg(text) {
+    return `<div class="user-msg"><div class="msg-text">${text}</div></div>`;
+  }
+
+  function buildAiMsg(text) {
+    return `
+      <div class="ai-msg">
+        <div class="ai-avatar">🤖</div>
+        <div class="ai-bubble">${text}</div>
+      </div>`;
+  }
+
+  // Override askAI to use new message structure
+  const _origAskAI = window.askAI;
+  window.askAI = async function() {
+    const questionInput = document.getElementById("question");
+    const fileInput = document.getElementById("imageInput");
+    const question = questionInput.value.trim();
+
+    if (!question) return;
+    if (!selectedSubject) { alert("Please select a subject first!"); return; }
+
+    if (fileInput.files.length > 0) { await uploadImage(); return; }
+
+    const chatArea = document.getElementById("chatArea");
+    chatArea.innerHTML += buildUserMsg(question);
+
+    // Typing indicator
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "ai-msg typing-indicator";
+    typingDiv.innerHTML = `
+      <div class="ai-avatar">🤖</div>
+      <div class="typing-dots"><span></span><span></span><span></span></div>`;
+    chatArea.appendChild(typingDiv);
+    chatArea.scrollTop = chatArea.scrollHeight;
+
+    try {
+      const res = await fetch("http://127.0.0.1:8000/ask", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ question, subject: selectedSubject, session_id: currentChatId, user_id: localStorage.getItem("user_id") || null })
+      });
+      const data = await res.json();
+      typingDiv.remove();
+
+      let answer = data.answer || "⚠ No answer found";
+      answer = answer.replace(/\n\n/g, "<br><br>").replace(/\n/g, "<br>")
+                     .replace(/\*\*(.*?)\*\*/g, "<b>$1</b>")
+                     .replace(/📘/g, "📘 ").replace(/✅/g, "<br>✅ ");
+
+      chatArea.innerHTML += buildAiMsg(answer);
+      speakText(answer.replace(/<[^>]*>/g, ""));
+
+      const key = selectedSubject + "_" + currentChatId;
+      const chatData = JSON.parse(localStorage.getItem(key)) || [];
+      chatData.push({ q: question, a: answer });
+      localStorage.setItem(key, JSON.stringify(chatData));
+      renderChatList();
+
+    } catch(e) {
+      typingDiv.remove();
+      chatArea.innerHTML += buildAiMsg("⚠ Error connecting to server.");
+    }
+
+    questionInput.value = "";
+    chatArea.scrollTop = chatArea.scrollHeight;
+  };
+
+  // Override uploadImage to use new message structure
+  const _origUploadImage = window.uploadImage;
+  window.uploadImage = async function() {
+    const fileInput     = document.getElementById("imageInput");
+    const chat          = document.getElementById("chatArea");
+    const questionInput = document.getElementById("question");
+    const file          = fileInput.files[0];
+    const question      = questionInput.value.trim();
+
+    if (!file) { alert("⚠️ Please select an image or PDF first."); return; }
+    if (!question) { questionInput.placeholder = "⚠️ Type your question first, then press ➤"; questionInput.focus(); return; }
+
+    const allowed = ["image/jpeg","image/jpg","image/png","image/bmp","image/webp","application/pdf"];
+    if (!allowed.includes(file.type)) { alert("⚠️ Only JPG, PNG, BMP, WEBP, or PDF supported."); clearFile(); return; }
+    if (file.size > 10*1024*1024) { alert("⚠️ Max file size is 10MB."); clearFile(); return; }
+    if (!selectedSubject) { alert("⚠️ Select a subject first."); return; }
+
+    chat.innerHTML += buildUserMsg(`📎 <b>${file.name}</b><br><small style="opacity:.8">❓ ${question}</small>`);
+
+    const typingDiv = document.createElement("div");
+    typingDiv.className = "ai-msg typing-indicator";
+    typingDiv.innerHTML = `<div class="ai-avatar">🤖</div><div class="typing-dots"><span></span><span></span><span></span></div>`;
+    chat.appendChild(typingDiv);
+    chat.scrollTop = chat.scrollHeight;
+
+    try {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("question", question);
+
+      const res = await fetch("http://127.0.0.1:8000/ask-from-image", { method: "POST", body: formData });
+      if (!res.ok) { const e = await res.json(); throw new Error(e.detail || `Error ${res.status}`); }
+
+      const data = await res.json();
+      typingDiv.remove();
+
+      if (data.extracted_text && data.extracted_text.trim()) {
+        const preview = data.extracted_text.length > 200 ? data.extracted_text.slice(0,200)+"..." : data.extracted_text;
+        chat.innerHTML += `<div class="extracted-preview">📄 <b>Extracted:</b> ${preview}</div>`;
+      }
+
+      let answer = data.answer || "⚠️ No answer received.";
+      answer = answer.replace(/\n\n/g,"<br><br>").replace(/\n/g,"<br>")
+                     .replace(/\*\*(.*?)\*\*/g,"<b>$1</b>")
+                     .replace(/✅/g,"<br>✅ ").replace(/📘/g,"📘 ");
+
+      chat.innerHTML += buildAiMsg(answer);
+      speakText(answer.replace(/<[^>]*>/g,"").trim());
+
+      if (currentChatId && selectedSubject) {
+        const key = selectedSubject + "_" + currentChatId;
+        const chatData = JSON.parse(localStorage.getItem(key)) || [];
+        chatData.push({ q:`📎 [${file.name}] ${question}`, a: answer });
+        localStorage.setItem(key, JSON.stringify(chatData));
+        renderChatList();
+      }
+
+    } catch(error) {
+      typingDiv.remove();
+      let msg = error.message.includes("Failed to fetch")
+        ? "Cannot connect to server. Make sure backend is running on port 8000."
+        : error.message;
+      chat.innerHTML += buildAiMsg(`⚠️ Error: ${msg}`);
+    }
+
+    questionInput.value = "";
+    questionInput.placeholder = "Ask anything… or upload a file 📎";
+    clearFile();
+    chat.scrollTop = chat.scrollHeight;
+  };
+  </script>
+
+</body>
 </html>
