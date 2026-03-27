@@ -8,9 +8,12 @@ app = FastAPI()
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIR = os.path.abspath(os.path.join(BASE_DIR, "../frontend"))
 
-# Serve CSS/JS/images/other frontend files
+# Serve frontend static files
 app.mount("/static", StaticFiles(directory=FRONTEND_DIR), name="static")
 
+# =========================
+# PAGE ROUTES ONLY
+# =========================
 @app.get("/")
 def home():
     return FileResponse(os.path.join(FRONTEND_DIR, "index.html"))
@@ -22,6 +25,10 @@ def login_page():
 @app.get("/signup")
 def signup_page():
     return FileResponse(os.path.join(FRONTEND_DIR, "signup.html"))
+
+@app.get("/dashboard")
+def dashboard_page():
+    return FileResponse(os.path.join(FRONTEND_DIR, "dashboard.html"))
 
 @app.get("/health")
 def health():

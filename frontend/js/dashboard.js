@@ -1,6 +1,9 @@
 function loadUser(){
     const user = localStorage.getItem("user_id") || "Student";
-    document.getElementById("userWelcome").innerText = `Hello ${user} 👋`;
+    const userNameEl = document.getElementById("userName");
+if (userNameEl) {
+  userNameEl.innerText = name;
+};
   }
 
   function logout(){
@@ -140,7 +143,7 @@ async function askAI() {
   let plainAnswer = "";
 
   try {
-    const res = await fetch("http://127.0.0.1:8000/ask", {
+    const res = await fetch("/ask", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -447,7 +450,7 @@ async function uploadImage() {
     formData.append("file", file);
     formData.append("question", question);
 
-    const res = await fetch("http://127.0.0.1:8000/ask-from-image", { method: "POST", body: formData });
+    const res = await fetch("/ask-from-image", { method: "POST", body: formData });
 
     if (!res.ok) {
       let errMsg = `Server error: ${res.status}`;
@@ -762,7 +765,7 @@ async function checkGrammar(){
   }
   document.getElementById("grammarResult").innerText = "⏳ Checking...";
   try {
-    const res = await fetch("http://127.0.0.1:8000/grammar-check", {
+    const res = await fetch("/grammar-check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ text: text })
