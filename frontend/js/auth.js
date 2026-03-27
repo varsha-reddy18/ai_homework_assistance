@@ -1,50 +1,71 @@
-function signup(){
+async function signup() {
+  const email = document.getElementById("email")?.value.trim();
+  const password = document.getElementById("password")?.value.trim();
 
-const email = document.getElementById("email").value
-const password = document.getElementById("password").value
+  if (!email || !password) {
+    alert("Please enter email and password");
+    return;
+  }
 
-if(email && password){
+  try {
+    const res = await fetch("/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-localStorage.setItem("user", email)
+    const data = await res.json();
 
-alert("Signup Successful")
+    if (res.ok) {
+      alert("Signup successful! Please login.");
+      window.location.href = "/login-page";
+    } else {
+      alert(data.detail || "Signup failed");
+    }
 
-window.location.href="dashboard.html"
-
-}else{
-
-alert("Please enter email and password")
-
+  } catch (error) {
+    console.error("Signup error:", error);
+    alert("Server error. Try again.");
+  }
 }
 
-}
 
+async function login() {
+  const email = document.getElementById("email")?.value.trim();
+  const password = document.getElementById("password")?.value.trim();
 
-async function login(){
+  if (!email || !password) {
+    alert("Please enter email and password");
+    return;
+  }
 
-const email=document.getElementById("email").value
-const password=document.getElementById("password").value
+  try {
+    const res = await fetch("/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, password })
+    });
 
-const res=await fetch("http://127.0.0.1:8000/login",{
+    const data = await res.json();
 
-method:"POST",
+    if (res.ok) {
+      alert("Login successful!");
 
-headers:{
-"Content-Type":"application/json"
-},
+      // ✅ Store auth data safely
+      localStorage.setItem("access_token", data.access_token);
+      localStorage.setItem("user", JSON.stringify(data.user));
 
-body:JSON.stringify({
-email:email,
-password:password
-})
+      window.location.href = "/dashboard";
+    } else {
+      alert(data.detail || "Invalid email or password");
+    }
 
-})
-
-const data=await res.json()
-
-// save user email as user_id
-localStorage.setItem("user_id",email)
-
-window.location.href="dashboard.html"
-
+  } catch (error) {
+    console.error("Login error:", error);
+    alert("Server connection failed.");
+  }
 }
