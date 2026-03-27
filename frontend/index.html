@@ -1,86 +1,59 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<title>AI Homework Assistant</title>
-<link rel="stylesheet" href="css/style.css">
+  <meta charset="UTF-8">
+  <title>AI Homework Assistant</title>
+  <link rel="stylesheet" href="/static/css/style.css">
 </head>
 
 <body>
 
-<!-- Navbar -->
+  <!-- Navbar -->
+  <header class="navbar">
+    <div class="logo">🎓 AI Homework Assistant</div>
 
-<header class="navbar">
+    <nav>
+      <button onclick="location.href='/static/login.html'">Log In</button>
+    </nav>
+  </header>
 
-<div class="logo">🎓 AI Homework Assistant</div>
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-left">
+      <h1>AI-Powered <br> Homework Assistance <br> System</h1>
 
-<nav>
-<button onclick="location.href='login.html'">Log In</button>
-</nav>
+      <p>
+        Get instant answers and step-by-step solutions
+        for your homework questions across all subjects.
+      </p>
 
-</header>
+      <button class="start-btn" onclick="location.href='/static/signup.html'">
+        Get Started
+      </button>
+    </div>
 
+    <div class="hero-right">
+      <img src="/static/images/background.png" alt="student">
+    </div>
+  </section>
 
-<!-- Hero Section -->
+  <!-- Feature Cards -->
+  <section class="features">
+    <div class="card">
+      <h3>🚀 Instant Solutions</h3>
+      <p>Get step-by-step solutions to any homework question.</p>
+    </div>
 
-<section class="hero">
+    <div class="card">
+      <h3>🎤 Voice & Image Input</h3>
+      <p>Ask questions using voice or upload an image.</p>
+    </div>
 
-<div class="hero-left">
-
-<h1>AI-Powered <br> Homework Assistance <br> System</h1>
-
-<p>
-Get instant answers and step-by-step solutions
-for your homework questions across all subjects.
-</p>
-
-<button class="start-btn" onclick="location.href='signup.html'">
-Get Started
-</button>
-
-</div>
-
-
-<div class="hero-right">
-
-<img src="images/background.png" alt="student">
-
-</div>
-
-</section>
-
-
-
-<!-- Feature Cards -->
-
-<section class="features">
-
-<div class="card">
-
-<h3>🚀 Instant Solutions</h3>
-
-<p>Get step-by-step solutions to any homework question.</p>
-
-</div>
-
-<div class="card">
-
-<h3>🎤 Voice & Image Input</h3>
-
-<p>Ask questions using voice or upload an image.</p>
-
-</div>
-
-<div class="card">
-
-<h3>📊 Track Progress</h3>
-
-<p>Monitor your learning and progress over time.</p>
-
-</div>
-
-</section>
-
+    <div class="card">
+      <h3>📊 Track Progress</h3>
+      <p>Monitor your learning and progress over time.</p>
+    </div>
+  </section>
 
 </body>
 </html>
